@@ -1,3 +1,4 @@
+-- CAREFUL: This script will delete all data in the tables and insert new test data
 -- Delete all records from each table before inserting new data
 DELETE FROM reaction;
 DELETE FROM hashtag;
