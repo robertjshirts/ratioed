@@ -1,1 +1,0 @@
-<template><p>user home page</p></template>
