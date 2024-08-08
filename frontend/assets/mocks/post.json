@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "body": "This is a new post.",
+  "accountId": 1,
+  "parentId": null,
+  "ratioed": false,
+  "timestamp": "2024-08-07T12:34:56Z",
+  "hashtags": ["#example", "#post"],
+  "reactions": {
+    "like": 10,
+    "dislike": 2
+  }
+}
