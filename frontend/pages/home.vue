@@ -1,26 +1,14 @@
 <script setup lang="ts">
-const links = [
-  {
-    label: 'Profile',
-    avatar: {
-      src: 'https://avatars.githubusercontent.com/u/739984?v=4',
-    },
-    badge: 100,
-  },
-  {
-    label: 'Installation',
-  },
-  {
-    label: 'Vertical Navigation',
-  },
-  {
-    label: 'Command Palette',
-  },
-];
+import * as posts from '~/assets/mocks/timeline.json'
 </script>
 
 <template>
-  <Post />
-  <Post />
-  <Post />
+  <div class="flex justify-center">
+    <aside class="h-screen sticky top-0"></aside>
+    <main>
+      <div v-for="post in posts">
+        <Post :post="post"/>
+      </div>
+    </main>
+  </div>
 </template>
