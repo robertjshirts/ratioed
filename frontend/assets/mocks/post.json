@@ -1,13 +1,18 @@
 {
-  "id": 1,
-  "body": "This is a new post.",
-  "accountId": 1,
-  "parentId": null,
-  "ratioed": false,
-  "timestamp": "2024-08-07T12:34:56Z",
-  "hashtags": ["#example", "#post"],
-  "reactions": {
-    "like": 10,
-    "dislike": 2
+  "user": {
+    "id": "112233",
+    "username": "javaJunkie",
+    "profilePicture": "https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_33/2203981/171026-better-coffee-boost-se-329p.jpg"
+  },
+  "body": {
+    "id": "12345",
+    "content": "Just had the best coffee ever! ☕️\n\nHighly recommend!",
+    "attachment": {
+      "type": "image",
+      "src": "https://preview.redd.it/the-sacabambaspis-an-extinct-genus-of-jawless-fish-v0-mn6hrm3yk5sa1.jpg?auto=webp&s=fff00db26e0b861d1a4beff64ae3398a11aa68a1"
+    },
+    "timestamp": "2024-08-08T10:30:00Z",
+    "likes": 120,
+    "dislikes": 5
   }
 }
