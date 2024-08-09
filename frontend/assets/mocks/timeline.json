@@ -3,11 +3,75 @@
     "username": "Generic User",
     "pfp": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     "content": {
-      "body": "this is a test post",
-      "likes": 69,
-      "dislikes": 12,
-      "timestamp": "2024-08-08T10:30:00Z"
-    }
+      "body": "this is a test post"
+    },
+    "likes": 69,
+    "dislikes": 12,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "FishLover69",
+    "pfp": "https://preview.redd.it/the-sacabambaspis-an-extinct-genus-of-jawless-fish-v0-mn6hrm3yk5sa1.jpg?auto=webp&s=fff00db26e0b861d1a4beff64ae3398a11aa68a1",
+    "content": {
+      "body": "guys check out this dumbass",
+      "attachment": {
+        "type": "image",
+        "src": "https://preview.redd.it/the-sacabambaspis-an-extinct-genus-of-jawless-fish-v0-mn6hrm3yk5sa1.jpg?auto=webp&s=fff00db26e0b861d1a4beff64ae3398a11aa68a1"
+      }
+    },
+    "likes": 120,
+    "dislikes": 5,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Donald J. Trump",
+    "pfp": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDXzlTTU-bXVN9om9zXsR6w0cDY9lOF7HOQg&s",
+    "content": {
+      "ratioed": true
+    },
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Generic User",
+    "pfp": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    "content": {
+      "body": "guy above me is a loser"
+    },
+    "likes": 69,
+    "dislikes": 12,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "FishLover69",
+    "pfp": "https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_33/2203981/171026-better-coffee-boost-se-329p.jpg",
+    "content": {
+      "body": "guys check out this dumbass",
+      "attachment": {
+        "type": "image",
+        "src": "https://static-cdn.jtvnw.net/jtv_user_pictures/2d498405-3ce3-41f8-a486-1a252bc18a85-profile_image-300x300.png"
+      }
+    },
+    "likes": 120,
+    "dislikes": 5,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Donald J. Trump",
+    "pfp": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDXzlTTU-bXVN9om9zXsR6w0cDY9lOF7HOQg&s",
+    "content": {
+      "ratioed": true
+    },
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Generic User",
+    "pfp": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    "content": {
+      "body": "this is a test post"
+    },
+    "likes": 69,
+    "dislikes": 12,
+    "timestamp": "2024-08-08T10:30:00Z"
   },
   {
     "username": "FishLover69",
@@ -17,17 +81,82 @@
       "attachment": {
         "type": "image",
         "src": "https://preview.redd.it/the-sacabambaspis-an-extinct-genus-of-jawless-fish-v0-mn6hrm3yk5sa1.jpg?auto=webp&s=fff00db26e0b861d1a4beff64ae3398a11aa68a1"
-      },
-      "likes": 120,
-      "dislikes": 5,
-      "timestamp": "2024-08-08T10:30:00Z"
-    }
+      }
+    },
+    "likes": 120,
+    "dislikes": 5,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Donald J. Trump",
+    "pfp": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDXzlTTU-bXVN9om9zXsR6w0cDY9lOF7HOQg&s",
+    "content": {
+      "ratioed": true
+    },
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Generic User",
+    "pfp": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    "content": {
+      "body": "this is a test post"
+    },
+    "likes": 69,
+    "dislikes": 12,
+    "timestamp": "2024-08-08T10:30:00Z"
   },
   {
     "username": "FishLover69",
     "pfp": "https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_33/2203981/171026-better-coffee-boost-se-329p.jpg",
     "content": {
+      "body": "guys check out this dumbass",
+      "attachment": {
+        "type": "image",
+        "src": "https://preview.redd.it/the-sacabambaspis-an-extinct-genus-of-jawless-fish-v0-mn6hrm3yk5sa1.jpg?auto=webp&s=fff00db26e0b861d1a4beff64ae3398a11aa68a1"
+      }
+    },
+    "likes": 120,
+    "dislikes": 5,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Donald J. Trump",
+    "pfp": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDXzlTTU-bXVN9om9zXsR6w0cDY9lOF7HOQg&s",
+    "content": {
       "ratioed": true
-    }
+    },
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Generic User",
+    "pfp": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+    "content": {
+      "body": "this is a test post"
+    },
+    "likes": 69,
+    "dislikes": 12,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "FishLover69",
+    "pfp": "https://media-cldnry.s-nbcnews.com/image/upload/newscms/2019_33/2203981/171026-better-coffee-boost-se-329p.jpg",
+    "content": {
+      "body": "guys check out this dumbass",
+      "attachment": {
+        "type": "image",
+        "src": "https://preview.redd.it/the-sacabambaspis-an-extinct-genus-of-jawless-fish-v0-mn6hrm3yk5sa1.jpg?auto=webp&s=fff00db26e0b861d1a4beff64ae3398a11aa68a1"
+      }
+    },
+    "likes": 120,
+    "dislikes": 5,
+    "timestamp": "2024-08-08T10:30:00Z"
+  },
+  {
+    "username": "Donald J. Trump",
+    "pfp": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDXzlTTU-bXVN9om9zXsR6w0cDY9lOF7HOQg&s",
+    "content": {
+      "ratioed": true
+    },
+    "timestamp": "2024-08-08T10:30:00Z"
   }
 ]
