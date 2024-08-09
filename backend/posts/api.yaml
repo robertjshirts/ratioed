@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: Posts API
+  version: 1.0.0
+paths:
+  /posts:
+    get:
+      summary: Get all posts
+      operationId: GetPosts
+      parameters:
+        - name: author
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter posts by author
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter posts by tag
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort posts by date
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: The page number to retreive (1-based index)
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: The number of posts per page (max 100)
+      responses:
+        '200':
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
+    post:
+      summary: Create a new post
+      operationId: CreatePost
+      requestBody:
+        $ref: '#/components/requestBodies/NewPost'
+      responses:
+        '201':
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+
+  /posts/{postId}:
+    get:
+      summary: Get a specific post by ID
+      operationId: GetPostById
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to retrieve
+      responses:
+        '200':
+          description: The post with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+
+    delete:
+      summary: Delete a post by ID
+      operationId: DeletePostById
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to delete
+      responses:
+        '204':
+          description: Post deleted successfully
+        '404':
+          description: Post not found
+
+components:
+  requestBodies:
+    NewPost:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+                description: Author's username
+              content:
+                $ref: '#/components/schemas/Content'
+                description: The content of a post
+            required:
+              - username
+              - content
+  schemas:
+    Content:
+      type: object
+      properties:
+        body:
+          type: string
+          description: The body of the post. Required, but c
+        attachments:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Attachment'
+          description: The URLs of the post's attachments
+      required:
+        - body
+    RatioedContent:
+      type: object
+      properties:
+        ratioed: 
+          type: boolean
+          description: Represents whether a post has been ratioed. Should always be true.
+      required:
+        - ratioed
+    Attachment:
+      type: object
+      properties: 
+        type:
+          type: string
+          description: The type of attachment
+          enum:
+            - image
+            - video
+        src:
+          type: string
+          description: The URL source for the attachment
+      required:
+        - type
+        - src
+    Post:
+      type: object
+      properties: 
+        username:
+          type: string
+          description: Author's username
+        pfp:
+          type: string
+          description: Author's pfp
+        content:
+          $ref: '#/components/schemas/Content'
+        likes:
+          type: integer
+          minimum: 0
+        dislikes:
+          type: integer
+          minimum: 0
+      required:
+        - username
+        - pfp
+        - content
+        - likes
+        - dislikes
+
+
