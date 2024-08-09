@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { Post } from "~/types/global";
 import response from "~/assets/mocks/timeline.json";
-const posts = response as any[]
+
+const posts = response as Post[]
 </script>
 
 <template>

@@ -1,19 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-  pfp: string
-  username: string
-  timestamp: string
-  content: {
-    ratioed?: boolean
-    body?: string
-    attachment?: {
-      type: string
-      src: string
-    }
-  }
-  likes: number
-  dislikes: number
-}>()
+import type { Post } from '~/types/global';
+
+defineProps<Post>()
 </script>
 
 <template>
