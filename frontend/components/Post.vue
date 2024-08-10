@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import type { Post } from '~/types/global';
+import type { Post } from "~/types/global";
 
-defineProps<Post>()
+defineProps<Post>();
 </script>
 
 <template>
   <div
-    class="flex p-4 border border-slate-800 w-auto hover:bg-[#1e1d24] transition-all"
+    class="transition-allmd:text-base flex w-auto border p-4 text-sm"
   >
-    <UAvatar :src="pfp" alt="avatar" size="lg" />
+    <img :src="pfp" class="max-w-12 max-h-12 rounded-full"> 
     <div class="ms-4">
       <div class="flex">
         <p class="font-bold">{{ username }}</p>
         <p class="ms-2 text-gray-400">·</p>
         <p class="ms-2 text-gray-400">{{ timestamp }}</p>
       </div>
-      <div v-if="content.ratioed">
+      <div v-if="!content.ratioed">
         <pre class="mt-2 font-sans">{{ content.body }}</pre>
         <img
           v-if="content.attachment"
@@ -23,33 +23,14 @@ defineProps<Post>()
           alt="image failed to load"
           class="mt-2 rounded-xl border border-slate-800"
         />
-        <div class="flex mt-4">
-          <UButton
-            icon="carbon:thumbs-up"
-            color="green"
-            variant="ghost"
-            :padded="false"
-            >{{ likes }}</UButton
-          >
-          <UButton
-            icon="carbon:thumbs-down"
-            color="red"
-            variant="ghost"
-            :padded="false"
-            class="ms-4"
-            >{{ dislikes }}</UButton
-          >
-          <UButton
-            icon="carbon:chat"
-            color="white"
-            variant="ghost"
-            :padded="false"
-            class="ms-4"
-            >{{ likes }}</UButton
-          >
+        <div class="mt-4 flex">
+          <button class="flex items-center">
+            <Icon name="carbon:thumbs-up" />
+            <p class="ms-2">{{ likes }}</p>
+          </button>
         </div>
       </div>
-      <div v-else class="text-gray-400 m-4 text-center">
+      <div v-else class="m-4 text-center text-gray-400">
         this post has been ratioed
       </div>
     </div>
