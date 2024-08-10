@@ -11,14 +11,17 @@ type DatabaseInterface interface {
 	GetPosts(params GetPostsParams) ([]Post, error)
 	GetPostById(postId int) (*Post, error)
 	DeletePost(postId int) error
+	GetIdByUsername(username string) (*int, error)
 }
 
 type Server struct {
-	// Add any dependencies or services your server needs here
+	db DatabaseInterface
 }
 
 func NewServer(database DatabaseInterface) *Server {
-	return &Server{}
+	return &Server{
+		db: database,
+	}
 }
 
 // GetPosts handles the GET /posts request.
@@ -33,9 +36,8 @@ func (s *Server) CreatePost(ctx echo.Context) error {
 	if err := ctx.Bind(&newPost); err != nil {
 		return ctx.JSON(http.StatusBadRequest, "Invalid request body")
 	}
-	// TODO: Implement logic to create a new post
-	// Example: return ctx.JSON(http.StatusCreated, createdPost)
-	return ctx.JSON(http.StatusNotImplemented, "CreatePost not implemented")
+
+	return ctx.JSON(http.StatusNotImplemented, "not impl")
 }
 
 // DeletePostById handles the DELETE /posts/{postId} request.

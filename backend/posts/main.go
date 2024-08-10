@@ -7,9 +7,11 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
+	middleware "github.com/oapi-codegen/echo-middleware"
 
 	"github.com/robertjshirts/ratioed/backend/posts/api"
 	"github.com/robertjshirts/ratioed/backend/posts/db"
+	"github.com/robertjshirts/ratioed/backend/posts/utils"
 )
 
 func main() {
@@ -20,8 +22,17 @@ func main() {
 
 	e := echo.New()
 
+	swagger, err := api.GetSwagger()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	e.Use(middleware.OapiRequestValidator(swagger))
+
 	api.RegisterHandlers(e, server)
 
-	log.Println("Listening on 0.0.0.0:8080")
-	log.Fatal(e.Start("0.0.0.0:8080"))
+	port := utils.GetEnv("PORT")
+	address := "0.0.0.0:" + port
+	log.Println("Listening on:", address)
+	log.Fatal(e.Start(address))
 }

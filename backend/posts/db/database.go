@@ -78,3 +78,7 @@ func (d *Database) GetPostById(postId int) (*api.Post, error) {
 func (d *Database) DeletePost(postId int) error {
 	return nil
 }
+
+func (d *Database) GetIdByUsername(username string) (*int, error) {
+	return nil, nil
+}
