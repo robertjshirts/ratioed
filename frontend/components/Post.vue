@@ -6,7 +6,8 @@ defineProps<Post>();
 
 <template>
   <div
-    class="transition-allmd:text-base flex w-auto border-y border-[#27272a] p-4 text-sm"
+    @click="$router.push(`/${username}/${id}`)"
+    class="flex w-auto cursor-pointer border-y border-t border-[#272727] p-4 text-sm transition-all hover:bg-[#1c1c1d] md:text-base"
   >
     <img :src="pfp" class="max-h-12 max-w-12 rounded-full" />
     <div class="ms-4">
@@ -21,12 +22,20 @@ defineProps<Post>();
           v-if="content.attachment"
           :src="content.attachment.src"
           alt="image failed to load"
-          class="mt-2 rounded-xl border"
+          class="mt-2 rounded-2xl border border-[#272727]"
         />
         <div class="mt-4 flex">
           <button class="flex items-center">
             <Icon name="carbon:thumbs-up" />
             <p class="ms-2">{{ likes }}</p>
+          </button>
+          <button class="ms-8 flex items-center">
+            <Icon name="carbon:thumbs-down" />
+            <p class="ms-2">{{ dislikes }}</p>
+          </button>
+          <button class="ms-8 flex items-center">
+            <Icon name="carbon:chat" />
+            <p class="ms-2">12</p>
           </button>
         </div>
       </div>
