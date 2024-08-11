@@ -6,9 +6,9 @@ defineProps<Post>();
 
 <template>
   <div
-    class="transition-allmd:text-base flex w-auto border p-4 text-sm"
+    class="transition-allmd:text-base flex w-auto border-y border-[#27272a] p-4 text-sm"
   >
-    <img :src="pfp" class="max-w-12 max-h-12 rounded-full"> 
+    <img :src="pfp" class="max-h-12 max-w-12 rounded-full" />
     <div class="ms-4">
       <div class="flex">
         <p class="font-bold">{{ username }}</p>
@@ -21,7 +21,7 @@ defineProps<Post>();
           v-if="content.attachment"
           :src="content.attachment.src"
           alt="image failed to load"
-          class="mt-2 rounded-xl border border-slate-800"
+          class="mt-2 rounded-xl border"
         />
         <div class="mt-4 flex">
           <button class="flex items-center">

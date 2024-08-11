@@ -10,7 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "shadcn-nuxt": "^0.10.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.427.0",
+    "radix-vue": "^1.9.3",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.5.4",
     "vue": "latest"
   },
@@ -22,6 +27,7 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "nuxt": "^3.12.4",
     "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.6"
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "shadcn-nuxt": "^0.10.4"
   }
 }
