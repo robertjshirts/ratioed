@@ -10,7 +10,7 @@ import (
 
 type DatabaseInterface interface {
 	CreatePost(accountId int, body string, tags []string, attachments []Attachment) (*Post, error)
-	GetPosts(params GetPostsParams) ([]Post, error)
+	GetPosts(username *string, tag *string, sort *GetPostsParamsSort, page *int, limit *int) ([]Post, error)
 	GetPostById(postId int) (*Post, error)
 	DeletePost(postId int) error
 	GetIdByUsername(username string) (int, error)
@@ -28,8 +28,12 @@ func NewServer(database DatabaseInterface) *Server {
 
 // GetPosts handles the GET /posts request.
 func (s *Server) GetPosts(ctx echo.Context, params GetPostsParams) error {
-	// TODO: Implement logic to retrieve posts based on params
-	return ctx.JSON(http.StatusNotImplemented, "GetPosts not implemented")
+	posts, err := s.db.GetPosts(params.Username, params.Tag, params.Sort, params.Limit, params.Page)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("There was an error getting the posts: %v", err))
+	}
+	return ctx.JSON(http.StatusOK, posts)
+
 }
 
 // CreatePost handles the POST /posts request.
@@ -46,7 +50,7 @@ func (s *Server) CreatePost(ctx echo.Context) error {
 	// Create the post
 	post, err := s.db.CreatePost(id, newPost.Content.Body, nil, nil)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error creating post: %w", err))
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error creating post: %v", err))
 	}
 
 	return ctx.JSON(http.StatusCreated, post)

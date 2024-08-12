@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -73,9 +74,71 @@ func (d *Database) CreatePost(accountId int, body string, tags []string, attachm
 	return d.GetPostById(id)
 }
 
-func (d *Database) GetPosts(params api.GetPostsParams) ([]api.Post, error) {
-	return nil, nil
+func (d *Database) GetPosts(username *string, tag *string, sort *api.GetPostsParamsSort, limit *int, page *int) ([]api.Post, error) {
+	var tempPosts []tempPost
+	// Do left joins because of potential query params
+	query := `
+		SELECT p.id, p.parent_id, p.body, p.account_id, p.ratioed, p.timestamp
+		FROM post p
+		LEFT JOIN account a on p.account_id = a.id
+		LEFT JOIN hashtag h on p.id = h.parent_id`
+	args := []interface{}{}
+	conditions := []string{}
+	argIdx := 1
 
+	if username != nil {
+		conditions = append(conditions, fmt.Sprintf("a.username = $%d", argIdx))
+		args = append(args, *username)
+		argIdx++
+	}
+
+	if tag != nil {
+		conditions = append(conditions, fmt.Sprintf("h.tag = $%d", argIdx))
+		args = append(args, *tag)
+		argIdx++
+	}
+
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	// Sort order
+	if sort != nil && (*sort == "asc") {
+		query += " ORDER BY p.timestamp ASC"
+	} else {
+		query += " ORDER BY p.timestamp DESC"
+	}
+
+	// Set limit
+	query += fmt.Sprintf(" LIMIT $%d", argIdx)
+	if limit == nil {
+		args = append(args, 100)
+		argIdx++
+		if page != nil {
+			query += fmt.Sprintf(" OFFSET $%d", argIdx)
+			args = append(args, ((*page - 1) * 100))
+		}
+	} else {
+		args = append(args, *limit)
+		argIdx++
+		if page != nil {
+			query += fmt.Sprintf(" OFFSET $%d", argIdx)
+			args = append(args, ((*page - 1) * *limit))
+		}
+	}
+
+	err := d.db.Select(&tempPosts, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving posts: %w", err)
+	}
+
+	var posts []api.Post
+
+	for _, tempPost := range tempPosts {
+		posts = append(posts, *tempPost.ToPost())
+	}
+
+	return posts, nil
 }
 
 func (d *Database) GetPostById(postId int) (*api.Post, error) {

@@ -8,25 +8,25 @@ paths:
       summary: Get all posts
       operationId: GetPosts
       parameters:
-        - name: author
+        - name: username
           in: query
           required: false
           schema:
             type: string
-          description: Filter posts by author
+          description: Filter posts by author's username
         - name: tag
           in: query
           required: false
           schema:
             type: string
-          description: Filter posts by tag
+          description: Filter posts by hashtag
         - name: sort
           in: query
           required: false
           schema:
             type: string
             enum: [asc, desc]
-          description: Sort posts by date
+          description: Sort posts by date (default desc)
         - name: page
           in: query
           required: false
@@ -39,8 +39,6 @@ paths:
           required: false
           schema:
             type: integer
-            minimum: 1
-            maximum: 100
           description: The number of posts per page (max 100)
       responses:
         '200':
