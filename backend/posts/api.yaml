@@ -99,18 +99,26 @@ paths:
           description: Post deleted successfully
         '404':
           description: Post not found
-
   /posts/{postId}/comments:
     get:
-    summary: Get all comments for a specific post
-    operationId: GetPostCommentsById
-    response:
-      '200':
-        description: The comments for the post with the given ID
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Posts'
+      summary: Get all comments for a specific post
+      operationId: GetPostCommentsById
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the post to retrieve comments for
+      responses:
+        '200':
+          description: The comments for the post with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posts'
+        '404':
+          description: Post not found
 
 components:
   requestBodies:

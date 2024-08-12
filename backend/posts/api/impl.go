@@ -14,6 +14,7 @@ type DatabaseInterface interface {
 	GetPostById(postId int) (*Post, error)
 	DeletePost(postId int) error
 	GetIdByUsername(username string) (int, error)
+	GetPostCommentsById(postId int) ([]Post, error)
 }
 
 type Server struct {
@@ -68,13 +69,28 @@ func (s *Server) GetPostById(ctx echo.Context, postId string) error {
 	// try to convert postId to an int
 	id, err := strconv.Atoi(postId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, "postId in path parameter must be an integer")
+		return ctx.JSON(http.StatusBadRequest, "postId in path parameter must be an integer")
 	}
 
 	post, err := s.db.GetPostById(id)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error retrieving post: %v", err))
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error retrieving post: %v", err))
 	}
 
 	return ctx.JSON(http.StatusOK, post)
+}
+
+func (s *Server) GetPostCommentsById(ctx echo.Context, postId string) error {
+	// try to convert postId to an int
+	id, err := strconv.Atoi(postId)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, "postId in path parameter must be an integer")
+	}
+
+	posts, err := s.db.GetPostCommentsById(id)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error retrieving posts: %s", err))
+	}
+
+	return ctx.JSON(http.StatusOK, posts)
 }

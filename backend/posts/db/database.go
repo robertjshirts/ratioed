@@ -209,3 +209,22 @@ func (d *Database) GetIdByUsername(username string) (int, error) {
 	id := 10
 	return id, nil
 }
+
+func (d *Database) GetPostCommentsById(postId int) ([]api.Post, error) {
+	var tempComments []tempPost
+	query := `
+	        SELECT id, parent_id, body, account_id, ratioed, timestamp
+	        FROM post
+		WHERE parent_id = $1`
+	err := d.db.Select(&tempComments, query, postId)
+	if err != nil {
+		return nil, fmt.Errorf("error getting comments: %w", err)
+	}
+
+	var comments []api.Post
+	for _, comment := range tempComments {
+		comments = append(comments, *comment.ToPost())
+	}
+
+	return comments, nil
+}
