@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
@@ -48,21 +49,36 @@ type Content struct {
 	Attachments *[]Attachment `json:"attachments,omitempty"`
 
 	// Body The body of the post. Required, but c
-	Body string `json:"body"`
+	Body string `db:"body" json:"body"`
 }
 
 // Post defines model for Post.
 type Post struct {
 	Content  Content `json:"content"`
 	Dislikes int     `json:"dislikes"`
-	Likes    int     `json:"likes"`
+
+	// Id the id of the post
+	Id    int `json:"id"`
+	Likes int `json:"likes"`
+
+	// ParentId the id of the parent of the post (if this field is not null, then the post is a comment)
+	ParentId *int `db:"parent_id" json:"parent_id,omitempty"`
 
 	// Pfp Author's pfp
 	Pfp string `json:"pfp"`
 
+	// Ratioed If this is true, the post should be displayed as a ratioed post (with no content, and locked with no more likes or dislikes)
+	Ratioed bool `json:"ratioed"`
+
+	// Timestamp A ISO8601 string that repreesents the exact time that the post was created (time is according to database)
+	Timestamp time.Time `json:"timestamp"`
+
 	// Username Author's username
 	Username string `json:"username"`
 }
+
+// Posts An array of posts
+type Posts = []Post
 
 // NewPost defines model for NewPost.
 type NewPost struct {
@@ -250,21 +266,26 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/7RWTW/bRhD9K4ttgaQAK1FNTro5NloIKIogTU9BDityKG3K/cjO0DZh8L8XsyQlUhQt",
-	"q4FPpnc4M++9nXnik8yc8c6CJZTrJxngewVIH1yuIR78BQ8fHRI/Zs4S2PiovC91pkg7u/yGzvIZZnsw",
-	"ip98cB4CdRUGaT8HKORa/rQ8Nl22abi87V5rElkhBKsMcEoOmAXtuZNcy5uK9i68QXF4JZFUe5BriRS0",
-	"3cmmSSIJHSCX6y9y8GIP5Oshx22/QUayGSdRqIBPOmSM4oZIZXvT0Rjzw5BNgX7eg/jn058CXRUyEIUL",
-	"gvYg1LHOBHh/cK4UR4QrxvlgK8MUtVE75nevc3ADdjOKxGgSYU+VSOTt8brGPI+9cZYvMkgm6h3SGxTD",
-	"nERqAoOX5mAg9UESqUJQNf+/dXl9vjtHht0X4lNHOhHbikR2cVRi7XOS9Avwo3Odayz1v2220VYbvr/0",
-	"0FBbgh0EfvOFr/nCP7MjHD0zZa+0XW23XpSewoD0+bXTtnCMhDSVHGOtUdx83PBAQ8AW2WqRLlIG7zxY",
-	"5bVcy3eLdPGO+yraR6mWfOvxaQfxVviyokVtcrmWfwDF2jElKAMEAeX6y6kIv+uSIMQRQrGthYqi8PRy",
-	"9HsFoZaJbAWUh+DR/CaCXWpAajdTvY1cUfpvF+hYOFcEM5XRBRqV7r1EIe8JVz1rJOcWz6sdCFuZLQRB",
-	"TgSgAPoexNvVr1uFkAttc3j8ZQaJb73riOQw8avpxJ8H0PV2RUfds7oM6q1Rj2KVpnO9S230WAajHrvm",
-	"aZo8D+UrbwJ6Z7Hd1N/S9KofyReZYXSeiQ3y3pxsrig10kGCuKdYGaNC3Y6+UGXZxxLpO0Mbb8htAEUQ",
-	"WyaDD4F6DuToW2HZfyg0E11WV+lyWY4pfT4XWYSfC6yyDBCLqizrEyFahkIJCw9RjRhvjWP5xH82edP6",
-	"YgkEU4nu4jm3+1Bv8ktWwsO5uRv+KPGCdLW7kWT7GmxDhCBPv0aeM4HpHL6fOnsUqG18KlAi389mWEei",
-	"cJXNT3RsZRCq5bStxeaOCz3nu/9fLzYUDfevqVj66hP6uSf0oGkf6e30PdhOuOtvIK60QA+ZLnQ2uoem",
-	"af4LAAD//1rFi7zWCwAA",
+	"H4sIAAAAAAAC/7RXb2/bthP+Kgf+fkBTQI7ltRgGv0sTbDAwbEHbvSqKgRbPNluJZMlTYiPwdx+OlCzZ",
+	"kvNn7V5F5p+7e567e3h5EIWtnDVoKIj5g/D4rcZA76zSGBf+wPtbG4g/C2sITfyUzpW6kKStmX4J1vBa",
+	"KDZYSf5y3jr01FjoXfu/x5WYi/9NO6fTdC1Mr5tj+0zUAb2RFfIVhaHw2rEnMRdXNW2sfxXgcCQTtHMo",
+	"5iKQ12Yt9vssgtAelZh/Er2DbSCfD3fs8gsWJPbHl8jXyCtNZBzFFZEsNlUD4xhf8MUw0I8bhL/e/w7B",
+	"1r5AWFkPtEGQnZ1B4O3CmCneAbs6vo+mrhiiruSa8d1phbaH7gwjcTeLYQ+ZyMR1l65jnJ3vcBZv4CAZ",
+	"qLOBXgXo38mEJqzCU3XQo/pAiZDeyx3/Xlq1G/fOO33vl/C+AZ3BsiYoBoxnYjux0ulJYRWu0UxwS15O",
+	"SK4TwKWYJ3/7Uwrj6hh5bat8bwcoHUr9Nd2utNEVZzo/ONSGcI2eT2o1pIMp0KpPhhi7+kwPTno09Pcz",
+	"HMWDfbdwofmHDrDSWCrQAYwlMHVZZnzIdCd1AAmFrTjxr4fhPidXXaCcL7dyj+gH7450oGdJwxGkiwaH",
+	"DsDykHWBh42tSwVLBKWDK+UOFUgG09hqiLjXtAFjoamFDKRRUNriKypo9yrrEWJWwHpoa6DHxtLaEqWJ",
+	"jaErDCSrMZCw+PDnLz/nM0jAgDaSwKPziIErLgaPW1kQsJm0fwB0LwMUHiWhgou4z7kpCutVNGZBSZJL",
+	"GZAjW1lfSRJzoSThhI+P8fojFV0rkfVlPaWy7bEuh22B97qpT9u59h0RtysDUYC4tF088kwti3IwUDEG",
+	"pM3K8m3SVPJW9AxXtwvWcfQhOZ5d5pc5G7AOjXRazMWby/zyDaOWtIn+p64Neo1RYlh54su8UGIufkO6",
+	"bUJ20ssKCX0Q80+nGH/VJaFP8GC5AxnzwkB591uNficykXIoDpvdmz/I2VMOSK7PWE87LzD9wXrqDHMh",
+	"nrEcrKcj0+0TKgM/D2x19P0ce2+cXCOYulqi557wSB71HcLFbMK9oUAbhdvXZyJx6cnuIjlo8GyoweMB",
+	"NL7bmgTH7HJQF5XcwizPz/kudaWPaajktnGe59njoXzmZgzOmpDejp/y/EWz4Xf2zanSlTpQ15Zxaqur",
+	"SvpdKn2QZdnuZcI1r/Nxh1xHrbtNr2Q3/+7OBXk0Ik/b+Xg/4GX2Il6epmMIn9cPUh3qosAQVnVZ7k6I",
+	"SAhBgsH7NA7wfhKO6QP/Wah9kr0SCYcU3cR1dvdut1BPSQkX5+LmaA7gRyPZbkqS5avXDTEEcTqEPyYC",
+	"wzp8OxTuSFByfEpQJt6evcEzysrWRp3wmGgAmTAtd7C4YUOP6e6/54sFRePdf8lY/kMrNIyV6MfDVMEz",
+	"DuNb6zs0DXMvT0HsaQgOC73SxVEihiU9bebJcDY9182BJk0tP8+lhwfZUcit48M/fuc4GBWso9snaJnk",
+	"fwIAAP///uMZ6rUPAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

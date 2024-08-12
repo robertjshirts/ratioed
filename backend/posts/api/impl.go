@@ -1,7 +1,9 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -11,7 +13,7 @@ type DatabaseInterface interface {
 	GetPosts(params GetPostsParams) ([]Post, error)
 	GetPostById(postId int) (*Post, error)
 	DeletePost(postId int) error
-	GetIdByUsername(username string) (*int, error)
+	GetIdByUsername(username string) (int, error)
 }
 
 type Server struct {
@@ -32,12 +34,22 @@ func (s *Server) GetPosts(ctx echo.Context, params GetPostsParams) error {
 
 // CreatePost handles the POST /posts request.
 func (s *Server) CreatePost(ctx echo.Context) error {
+	// Get the json
 	var newPost NewPost
 	if err := ctx.Bind(&newPost); err != nil {
 		return ctx.JSON(http.StatusBadRequest, "Invalid request body")
 	}
 
-	return ctx.JSON(http.StatusNotImplemented, "not impl")
+	// Get the username's account id
+	id, _ := s.db.GetIdByUsername(newPost.Username)
+
+	// Create the post
+	post, err := s.db.CreatePost(id, newPost.Content.Body, nil, nil)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error creating post: %w", err))
+	}
+
+	return ctx.JSON(http.StatusCreated, post)
 }
 
 // DeletePostById handles the DELETE /posts/{postId} request.
@@ -49,7 +61,16 @@ func (s *Server) DeletePostById(ctx echo.Context, postId string) error {
 
 // GetPostById handles the GET /posts/{postId} request.
 func (s *Server) GetPostById(ctx echo.Context, postId string) error {
-	// TODO: Implement logic to retrieve a specific post by ID
-	// Example: return ctx.JSON(http.StatusOK, post)
-	return ctx.JSON(http.StatusNotImplemented, "GetPostById not implemented")
+	// try to convert postId to an int
+	id, err := strconv.Atoi(postId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, "postId in path parameter must be an integer")
+	}
+
+	post, err := s.db.GetPostById(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error retrieving post: %v", err))
+	}
+
+	return ctx.JSON(http.StatusOK, post)
 }

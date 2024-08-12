@@ -82,7 +82,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/Posts'
         '404':
           description: Post not found
 
@@ -101,6 +101,18 @@ paths:
           description: Post deleted successfully
         '404':
           description: Post not found
+
+  /posts/{postId}/comments:
+    get:
+    summary: Get all comments for a specific post
+    operationId: GetPostCommentsById
+    response:
+      '200':
+        description: The comments for the post with the given ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Posts'
 
 components:
   requestBodies:
@@ -127,6 +139,8 @@ components:
         body:
           type: string
           description: The body of the post. Required, but c
+          x-oapi-codegen-extra-tags:
+            db: "body"
         attachments:
           type: array
           items: 
@@ -134,14 +148,6 @@ components:
           description: The URLs of the post's attachments
       required:
         - body
-    RatioedContent:
-      type: object
-      properties:
-        ratioed: 
-          type: boolean
-          description: Represents whether a post has been ratioed. Should always be true.
-      required:
-        - ratioed
     Attachment:
       type: object
       properties: 
@@ -160,6 +166,14 @@ components:
     Post:
       type: object
       properties: 
+        id:
+          type: integer
+          description: the id of the post
+        parent_id:
+          type: integer
+          description: the id of the parent of the post (if this field is not null, then the post is a comment)
+          x-oapi-codegen-extra-tags:
+            db: parent_id
         username:
           type: string
           description: Author's username
@@ -167,18 +181,36 @@ components:
           type: string
           description: Author's pfp
         content:
-          $ref: '#/components/schemas/Content'
+           $ref: '#/components/schemas/Content'
+        ratioed:
+          type: boolean
+          description: If this is true, the post should be displayed as a ratioed post (with no content, and locked with no more likes or dislikes)
         likes:
           type: integer
           minimum: 0
         dislikes:
           type: integer
           minimum: 0
+        timestamp:
+          type: string
+          format: date-time
+          description: A ISO8601 string that repreesents the exact time that the post was created (time is according to database)
       required:
+        - id
         - username
         - pfp
         - content
+        - ratioed
         - likes
         - dislikes
+        - timestamp
+    Posts:
+      description: An array of posts
+      type: array
+      items:
+        $ref: '#/components/schemas/Post'
+
+
+
 
 
