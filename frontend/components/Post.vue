@@ -7,7 +7,7 @@ defineProps<Post>();
 <template>
   <div
     @click="$router.push(`/${username}/${id}`)"
-    class="flex w-auto cursor-pointer border-y border-t border-[#272727] p-4 text-sm transition-all hover:bg-[#1c1c1d] md:text-base"
+    class="flex w-auto cursor-pointer rounded-lg bg-[#1a1a1a] p-4 text-sm transition-all hover:bg-[#1c1c1d] md:text-base"
   >
     <img :src="pfp" class="max-h-12 max-w-12 rounded-full" />
     <div class="ms-4">
@@ -22,7 +22,7 @@ defineProps<Post>();
           v-if="content.attachment"
           :src="content.attachment.src"
           alt="image failed to load"
-          class="mt-2 rounded-2xl border border-[#272727]"
+          class="mt-2 rounded-lg border border-[#272727]"
         />
         <div class="mt-4 flex">
           <button class="flex items-center">
