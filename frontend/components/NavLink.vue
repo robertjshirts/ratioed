@@ -7,8 +7,9 @@ defineProps<{
 
 <template>
   <NuxtLink
-    to="/home"
-    class="flex items-center rounded-2xl bg-white px-4 py-2 text-lg font-bold text-black"
+    :to="to"
+    class="hover: flex items-center rounded-lg px-4 py-2 text-lg font-bold transition-all"
+    :class="{ 'bg-white': $route.path == to, 'text-black': $route.path == to }"
   >
     <Icon :name="icon" class="me-2" />
     <slot></slot>
