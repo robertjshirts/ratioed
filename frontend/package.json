@@ -22,6 +22,7 @@
     "@hebilicious/authjs-nuxt": "^0.3.5",
     "@iconify-json/carbon": "^1.1.37",
     "@nuxt/icon": "^1.4.5",
+    "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "nuxt": "^3.12.4",
     "prettier": "^3.3.3",
