@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import * as posts from '~/assets/mocks/timeline.json'
+import type { Post } from "~/types/global";
+import response from "~/assets/mocks/timeline.json";
+
+const timeline = response as Post[];
 </script>
 
 <template>
-  <div class="flex justify-center">
-    <aside class="h-screen sticky top-0"></aside>
-    <main>
-      <div v-for="post in posts">
-        <Post :post="post"/>
-      </div>
-    </main>
+  <div class="mb-6 flex w-full items-center justify-between">
+    <span class="text-2xl font-bold">Home</span>
+    <div class="flex">
+      <NuxtLink
+        class="text-gray-400"
+        :class="{ 'text-white': $route.fullPath == '/home' }"
+        >Popular</NuxtLink
+      >
+      <NuxtLink class="ms-3 text-gray-400">Recents</NuxtLink>
+      <NuxtLink class="ms-3 text-gray-400">Following</NuxtLink>
+    </div>
+  </div>
+  <div>
+    <Post v-for="post in timeline" v-bind="post" class="mb-2" />
   </div>
 </template>

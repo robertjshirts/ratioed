@@ -10,13 +10,22 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "shadcn-nuxt": "^0.10.4",
+    "@auth/core": "^0.34.2",
+    "class-variance-authority": "^0.7.0",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.5.4",
     "vue": "latest"
   },
   "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e",
   "devDependencies": {
-    "@nuxt/ui": "^2.18.4",
+    "@hebilicious/authjs-nuxt": "^0.3.5",
+    "@iconify-json/carbon": "^1.1.37",
+    "@nuxt/icon": "^1.4.5",
+    "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/tailwindcss": "^6.12.1",
-    "nuxt": "^3.12.4"
+    "nuxt": "^3.12.4",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6"
   }
 }
