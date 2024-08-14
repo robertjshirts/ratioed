@@ -214,7 +214,18 @@ func (d *Database) GetPostById(postId int) (*api.Post, error) {
 	return post.ToPost(), nil
 }
 
-func (d *Database) DeletePost(postId int) error {
+func (d *Database) DeletePostById(postId int) error {
+	query := `
+		DELETE from post
+		WHERE id = $1`
+	_, err := d.db.Exec(query, postId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil
+		}
+		return fmt.Errorf("error deleting post: %v", err)
+	}
+
 	return nil
 }
 

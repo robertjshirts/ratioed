@@ -13,7 +13,7 @@ type DatabaseInterface interface {
 	CreatePost(accountId int, body string, tags []string, attachments []Attachment) (*Post, error)
 	GetPosts(username *string, tag *string, sort *GetPostsParamsSort, page *int, limit *int) ([]Post, error)
 	GetPostById(postId int) (*Post, error)
-	DeletePost(postId int) error
+	DeletePostById(postId int) error
 	GetIdByUsername(username string) (*int, error)
 	GetPostCommentsById(postId int) ([]Post, error)
 }
@@ -79,9 +79,19 @@ func (s *Server) CreatePost(ctx echo.Context) error {
 
 // DeletePostById handles the DELETE /posts/{postId} request.
 func (s *Server) DeletePostById(ctx echo.Context, postId string) error {
-	// TODO: Implement logic to delete the post by ID
-	// Example: return ctx.NoContent(http.StatusNoContent)
-	return ctx.JSON(http.StatusNotImplemented, "DeletePostById not implemented")
+	// TODO: auth
+	// try to convert postId to an int
+	id, err := strconv.Atoi(postId)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, "postId in path parameter must be an integer")
+	}
+
+	err = s.db.DeletePostById(id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error deleting post: %v", err))
+	}
+
+	return ctx.NoContent(http.StatusNoContent)
 }
 
 // GetPostById handles the GET /posts/{postId} request.
