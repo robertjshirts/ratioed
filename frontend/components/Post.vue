@@ -9,7 +9,11 @@ defineProps<Post>();
     @click="$router.push(`/${username}/posts/${id}`)"
     class="flex w-auto cursor-pointer rounded-lg bg-[#1a1a1a] p-4 text-sm transition-all hover:bg-[#1c1c1d] md:text-base"
   >
-    <img :src="pfp" class="max-h-12 max-w-12 rounded-full" />
+    <img
+      :src="pfp"
+      class="max-h-12 max-w-12 rounded-full"
+      alt="image failed to load"
+    />
     <div class="ms-4">
       <div class="flex">
         <p class="font-bold">{{ username }}</p>

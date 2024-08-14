@@ -13,20 +13,20 @@ const timeline = response as Post[];
         to="/home"
         class="text-gray-400"
         :class="{ 'text-white': $route.fullPath == '/home' }"
-        >Recent</NuxtLink
-      >
+        >Recent
+      </NuxtLink>
       <NuxtLink
-        to="/home?s=popular"
+        to="/home?f=popular"
         class="ms-4 text-gray-400"
-        :class="{ 'text-white': $route.fullPath == '/home?s=popular' }"
-        >Popular</NuxtLink
-      >
+        :class="{ 'text-white': $route.fullPath == '/home?f=popular' }"
+        >Popular
+      </NuxtLink>
       <NuxtLink
-        to="/home?s=following"
+        to="/home?f=following"
         class="ms-4 text-gray-400"
-        :class="{ 'text-white': $route.fullPath == '/home?s=following' }"
-        >Following</NuxtLink
-      >
+        :class="{ 'text-white': $route.fullPath == '/home?f=following' }"
+        >following
+      </NuxtLink>
     </div>
   </div>
   <div>
