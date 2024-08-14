@@ -6,8 +6,5 @@ const timeline = response as Post[];
 </script>
 
 <template>
-  <span class="text-2xl font-bold">Home</span>
-  <div v-for="post in timeline" class="mt-2">
-    <Post v-bind="post" />
-  </div>
+  <Post v-for="post in timeline" v-bind="post" class="mt-2" />
 </template>
