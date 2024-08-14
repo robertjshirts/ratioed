@@ -12,6 +12,6 @@ defineProps<{
     :class="{ 'bg-white': $route.path == to, 'text-black': $route.path == to }"
   >
     <Icon :name="icon" class="me-2" />
-    <slot></slot>
+    <slot />
   </NuxtLink>
 </template>
