@@ -15,21 +15,22 @@
 - Account has username
 - Account has password
 - Account has bio
+- Account has pfp
 - Post has id
 - Post has body
-- Post has author
+- Post has author id
 - Post has hashtags
 - Post has ratio
 - Post has timestamp
-- Reaction has an id
-- Reaction has reaction type (like or dislike)
+- Attachment has parent post or comment
+- Attachment has src
 - Reaction has parent post or comment
-- Reaction has author
+- Reaction has author id
+- Reaction has reaction type (like or dislike)
 - Reaction has timestamp
 - Comment inherits from Post
 - Comment has id
-- Comment has parent post
-- Parent post can be a Post or a Comment
+- Comment has parent post or comment
 - Comment has author
 - Comment has body
 - Comment has likes
@@ -44,17 +45,16 @@
 - Usernames must be unique
 - Account has exactly one passsword
 - Account has exactly one bio
-- Post is linked to exactly one author account
-- Post has exactly one id
+- Account may have up to one pfp Post is linked to exactly one author account Post has exactly one id
 - Post ids must be unique
 - Post has exactly one body
 - Post body must have at least one character
 - Post has 0 or more hashtags
 - Post has ratioed status
 - Post has exactly one timestamp
-- Reaction has exactly one id
-- Reaction ids must be unique
-- Reaction is linked to exactly one parent post
+- Attachment has exactly one parent post or comment
+- Attachment has exactly one src
+- Reaction is linked to exactly one parent post or comment
 - Reaction is linked to exactly one author account
 - Reaction has exactly one timestamp
 - Reaction has exactly one reaction type
@@ -71,6 +71,7 @@
 - Comment has exactly one timestamp
 #### Derivation Rules
 - Ratio = likes / dislikes
+- Ratioed = post ratio <= global ratio
 #### Schema
-- `ratioed/init.sql`
+- `./database/init.sql`
 
