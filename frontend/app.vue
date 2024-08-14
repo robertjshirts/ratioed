@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed top-0 z-40 w-full border-b border-[#272727] bg-[#1a1a1a] p-3 text-center"
+    class="fixed top-0 z-40 w-full border-b border-[#272727] bg-[#151515] p-3 text-center"
   >
     <span class="text-2xl">ratioed</span>
   </div>

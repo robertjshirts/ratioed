@@ -22,14 +22,14 @@ defineProps<Post>();
           v-if="content.attachment"
           :src="content.attachment.src"
           alt="image failed to load"
-          class="mt-2 rounded-lg border border-[#272727]"
+          class="mt-2 w-96 rounded-lg border border-[#272727] bg-cover"
         />
         <div class="mt-4 flex">
-          <button class="flex items-center">
+          <button class="flex items-center text-green-500">
             <Icon name="carbon:thumbs-up" />
             <p class="ms-2">{{ likes }}</p>
           </button>
-          <button class="ms-8 flex items-center">
+          <button class="ms-8 flex items-center text-red-500">
             <Icon name="carbon:thumbs-down" />
             <p class="ms-2">{{ dislikes }}</p>
           </button>
