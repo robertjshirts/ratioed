@@ -8,7 +8,7 @@
       />
       <span class="mt-4 text-lg font-semibold">Generic User</span>
     </div>
-    <div class="mt-8 flex w-full flex-col items-center">
+    <div class="mt-10 flex w-full flex-col items-center px-8">
       <NavLink to="/home" icon="carbon:home">Home</NavLink>
       <NavLink to="/following" icon="carbon:user-multiple" class="mt-2">
         Following
@@ -18,6 +18,10 @@
         Settings
       </NavLink>
     </div>
-    <button class="w-full">Post</button>
+    <div class="mt-16 px-8">
+      <button class="w-full rounded-3xl bg-white p-3 font-bold text-black">
+        Post
+      </button>
+    </div>
   </div>
 </template>
