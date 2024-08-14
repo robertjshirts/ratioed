@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -64,9 +65,34 @@ func (d *Database) CreatePost(accountId int, body string, tags []string, attachm
 		return nil, fmt.Errorf("error creating post in database: %w", err)
 	}
 
-	// TODO: Insert attachments
-
-	// TODO: Insert tags
+	if len(attachments) > 0 {
+		query = `
+			INSERT INTO attachment (parent_id, src, type)
+			VALUES `
+		var attachmentValues []string
+		for _, attachment := range attachments {
+			attachmentValues = append(attachmentValues, fmt.Sprintf("(%d, '%s', '%s')", id, attachment.Src, attachment.Type))
+		}
+		query += strings.Join(attachmentValues, ", ")
+		_, err := tx.Exec(query)
+		if err != nil {
+			return nil, fmt.Errorf("error creating attachments: %w", err)
+		}
+	}
+	if len(tags) > 0 {
+		query = `
+			INSERT INTO hashtag (parent_id, tag)
+			VALUES `
+		var tagValues []string
+		for _, tag := range tags {
+			tagValues = append(tagValues, fmt.Sprintf("(%d, '%s')", id, tag))
+		}
+		query += strings.Join(tagValues, ", ")
+		_, err := tx.Exec(query)
+		if err != nil {
+			return nil, fmt.Errorf("error creating tags, %w", err)
+		}
+	}
 
 	// Return the post details
 
@@ -78,7 +104,7 @@ func (d *Database) GetPosts(username *string, tag *string, sort *api.GetPostsPar
 	var tempPosts []tempPost
 	// Do left joins because of potential query params
 	query := `
-		SELECT p.id, p.parent_id, p.body, p.account_id, p.ratioed, p.timestamp
+		SELECT p.id, p.parent_id, p.body, p.account_id, p.ratioed, p.timestamp, a.username
 		FROM post p
 		LEFT JOIN account a on p.account_id = a.id
 		LEFT JOIN hashtag h on p.id = h.parent_id`
@@ -132,10 +158,13 @@ func (d *Database) GetPosts(username *string, tag *string, sort *api.GetPostsPar
 		return nil, fmt.Errorf("error retrieving posts: %w", err)
 	}
 
+	// Get attachments
+
 	var posts []api.Post
 
 	for _, tempPost := range tempPosts {
 		posts = append(posts, *tempPost.ToPost())
+		// Get attachments for each one
 	}
 
 	return posts, nil
@@ -159,30 +188,28 @@ func (d *Database) GetPostById(postId int) (*api.Post, error) {
 
 	// Query for the post
 	query := `
-	        SELECT id, parent_id, body, account_id, ratioed, timestamp
-	        FROM post
-	        WHERE id = $1`
+	        SELECT p.id, p.parent_id, p.body, p.account_id, p.ratioed, p.timestamp, a.username
+	        FROM post p
+		LEFT JOIN account a on p.account_id = a.id
+		WHERE p.id = $1`
 	err = tx.Get(&post, query, postId)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("error retrieving post from db: %w", err)
 	}
 
-	// Query for the attachments
-	// Ignore error bc it'll only ever be no rows
-	query = `
-        SELECT id, src
-        FROM attachment
-        WHERE parent_id = $1`
-	tx.Select(&post.Content.Attachments, query, postId)
+	attachments, err := d.GetPostAttachmentsById(*tx, postId)
+	if err != nil {
+		return nil, fmt.Errorf("error getting attachments: %w", err)
+	}
 
+	post.Attachments = &attachments
+
+	// Impl likes at a later date (probably requires another db :(((
 	post.Likes = 0
 	post.Dislikes = 0
-
-	// Get the actual username
-	post.Username, err = d.GetUsernameById(post.AccountId)
-	if err != nil {
-		return nil, fmt.Errorf("error getting username: %w", err)
-	}
 
 	return post.ToPost(), nil
 }
@@ -191,30 +218,46 @@ func (d *Database) DeletePost(postId int) error {
 	return nil
 }
 
-func (d *Database) GetUsernameById(account_id int) (string, error) {
+func (d *Database) GetUsernameById(account_id int) (*string, error) {
 	var username string
 
 	query := `
 		SELECT username 
 		FROM account
 		WHERE id = $1`
-	if err := d.db.Get(&username, query, account_id); err != nil {
-		return "", err
+	err := d.db.Get(&username, query, account_id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
 	}
 
-	return username, nil
+	return &username, nil
 }
 
-func (d *Database) GetIdByUsername(username string) (int, error) {
-	id := 10
-	return id, nil
+func (d *Database) GetIdByUsername(username string) (*int, error) {
+	var id int
+	query := `
+		SELECT id
+		FROM account
+		WHERE account.username = $1`
+	err := d.db.Get(&id, query, username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("error getting account id from username: %w", err)
+	}
+	return &id, nil
 }
 
 func (d *Database) GetPostCommentsById(postId int) ([]api.Post, error) {
 	var tempComments []tempPost
 	query := `
-	        SELECT id, parent_id, body, account_id, ratioed, timestamp
-	        FROM post
+	        SELECT p.id, p.parent_id, p.body, p.account_id, p.ratioed, p.timestamp, a.username
+	        FROM post p
+		LEFT JOIN account a on p.account_id = a.id
 		WHERE parent_id = $1`
 	err := d.db.Select(&tempComments, query, postId)
 	if err != nil {
@@ -227,4 +270,17 @@ func (d *Database) GetPostCommentsById(postId int) ([]api.Post, error) {
 	}
 
 	return comments, nil
+}
+
+func (d *Database) GetPostAttachmentsById(tx sqlx.Tx, postId int) ([]api.Attachment, error) {
+	var attachments []api.Attachment
+	query := `
+		SELECT src, type FROM attachment
+		WHERE attachment.parent_id = $1`
+	err := tx.Select(&attachments, query, postId)
+	if err != nil {
+		return nil, fmt.Errorf("error getting post attachments: %w", err)
+	}
+
+	return attachments, nil
 }

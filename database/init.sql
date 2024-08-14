@@ -14,7 +14,7 @@ CREATE TABLE account (
 CREATE TABLE post (
     id SERIAL PRIMARY KEY,
     parent_id INT,
-    body TEXT NOT NULL CHECK (LENGTH(body) > 0),
+    body TEXT NOT NULL,
     account_id INT NOT NULL,
     ratioed BOOLEAN NOT NULL DEFAULT FALSE,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -26,8 +26,10 @@ CREATE TABLE post (
 -- id only exists to differentiate here, no foreign keys link to it
 CREATE TABLE attachment (
     id SERIAL PRIMARY KEY,
-    parent_id NOT NULL,
+    parent_id INT NOT NULL,
     src VARCHAR(255) NOT NULL,
+    type VARCHAR(10) NOT NULL CHECK (type  IN ('image', 'video')),
+    FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE
 );
 
 -- Create Hashtag table

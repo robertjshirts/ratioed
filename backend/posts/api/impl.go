@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,7 +14,7 @@ type DatabaseInterface interface {
 	GetPosts(username *string, tag *string, sort *GetPostsParamsSort, page *int, limit *int) ([]Post, error)
 	GetPostById(postId int) (*Post, error)
 	DeletePost(postId int) error
-	GetIdByUsername(username string) (int, error)
+	GetIdByUsername(username string) (*int, error)
 	GetPostCommentsById(postId int) ([]Post, error)
 }
 
@@ -45,16 +46,35 @@ func (s *Server) CreatePost(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, "Invalid request body")
 	}
 
+	// Parse the hashtags
+	tags := getTags(newPost.Content.Body)
+
+	// Get the attachments
+	var attachments []Attachment
+	if newPost.Content.Attachments != nil {
+		attachments = *newPost.Content.Attachments
+	}
+
 	// Get the username's account id
-	id, _ := s.db.GetIdByUsername(newPost.Username)
+	id, err := s.db.GetIdByUsername(newPost.Username)
+
+	// If err when trying to get account
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprint(err))
+	}
+
+	// If no account found
+	if id == nil {
+		ctx.JSON(http.StatusBadRequest, fmt.Sprintf("There is no user with username '%s'", newPost.Username))
+	}
 
 	// Create the post
-	post, err := s.db.CreatePost(id, newPost.Content.Body, nil, nil)
+	post, err := s.db.CreatePost(*id, newPost.Content.Body, tags, attachments)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error creating post: %v", err))
 	}
 
-	return ctx.JSON(http.StatusCreated, post)
+	return ctx.JSON(http.StatusCreated, *post)
 }
 
 // DeletePostById handles the DELETE /posts/{postId} request.
@@ -77,6 +97,10 @@ func (s *Server) GetPostById(ctx echo.Context, postId string) error {
 		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("error retrieving post: %v", err))
 	}
 
+	if post == nil {
+		return ctx.NoContent(http.StatusNotFound)
+	}
+
 	return ctx.JSON(http.StatusOK, post)
 }
 
@@ -93,4 +117,46 @@ func (s *Server) GetPostCommentsById(ctx echo.Context, postId string) error {
 	}
 
 	return ctx.JSON(http.StatusOK, posts)
+}
+
+func getTags(body string) []string {
+	var tags []string
+	var buffer strings.Builder
+	inTag := false
+	for _, char := range body {
+		if char == '#' {
+			if inTag == true {
+				if buffer.Len() > 0 {
+					tags = append(tags, buffer.String())
+				}
+				buffer.Reset()
+				continue
+			}
+			inTag = true
+
+			// Continue so we don't push the hash to the buffer
+			continue
+		}
+
+		if char == ' ' {
+			if inTag {
+				inTag = !inTag
+				tags = append(tags, buffer.String())
+				buffer.Reset()
+			}
+
+			// Continue so we don't push the space to the buffer
+			continue
+		}
+
+		if inTag {
+			buffer.WriteRune(char)
+		}
+	}
+
+	if buffer.Len() > 0 {
+		tags = append(tags, buffer.String())
+	}
+
+	return tags
 }
