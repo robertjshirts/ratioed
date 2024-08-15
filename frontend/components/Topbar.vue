@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed top-0 flex w-full items-center justify-between border-b border-[#3f3f3f] px-6 py-4"
+    class="fixed top-0 z-40 flex w-full items-center justify-between border-b border-[#3f3f3f] bg-[#0f0f0f] px-6 py-4"
   >
     <span class="text-2xl font-bold">ratioed</span>
     <div class="flex items-center">
