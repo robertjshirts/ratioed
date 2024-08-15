@@ -6,16 +6,27 @@ const timeline = response as Post[];
 </script>
 
 <template>
-  <div class="mb-6 flex w-full items-center justify-between">
+  <div class="mb-6 flex items-center justify-between">
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">
       <NuxtLink
+        to="/home"
         class="text-gray-400"
         :class="{ 'text-white': $route.fullPath == '/home' }"
-        >Popular</NuxtLink
-      >
-      <NuxtLink class="ms-3 text-gray-400">Recents</NuxtLink>
-      <NuxtLink class="ms-3 text-gray-400">Following</NuxtLink>
+        >Recent
+      </NuxtLink>
+      <NuxtLink
+        to="/home?f=popular"
+        class="ms-4 text-gray-400"
+        :class="{ 'text-white': $route.fullPath == '/home?f=popular' }"
+        >Popular
+      </NuxtLink>
+      <NuxtLink
+        to="/home?f=following"
+        class="ms-4 text-gray-400"
+        :class="{ 'text-white': $route.fullPath == '/home?f=following' }"
+        >following
+      </NuxtLink>
     </div>
   </div>
   <div>
