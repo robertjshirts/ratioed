@@ -4,7 +4,7 @@ const status = true;
 
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div v-if="status" class="flex flex-col py-8">
+    <div v-if="status" class="flex flex-col py-8 pl-2">
       <img
         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUxlLWqyirlf0ApuqexYrx3jH9P031hUiCOw&s"
         alt=""
@@ -39,7 +39,11 @@ const status = true;
       <button class="mb-2 mt-4 rounded-md border py-2">Log in</button>
     </div>
     <div v-if="status" class="pt-8">
-      <button class="w-full rounded-3xl bg-white py-3 text-black">Post</button>
+      <button
+        class="w-full rounded-3xl bg-white py-3 text-black transition-all hover:bg-gray-200"
+      >
+        Post
+      </button>
     </div>
   </div>
 </template>
