@@ -40,7 +40,7 @@ func (d *Database) Close() {
 	d.db.Close()
 }
 
-func (d *Database) CreatePost(accountId int, body string, tags []string, attachments []api.Attachment) (*api.Post, error) {
+func (d *Database) CreatePost(accountId string, parentId *string, body string, tags []string, attachments []api.Attachment) (*api.Post, error) {
 	tx, err := d.db.Beginx()
 	if err != nil {
 		return nil, err
@@ -54,12 +54,17 @@ func (d *Database) CreatePost(accountId int, body string, tags []string, attachm
 		}
 	}()
 
-	var id int
+	var id string
 	query := `
-		INSERT INTO post (account_id, body)
-		VALUES ($1, $2)
+		INSERT INTO post (account_id, parent_id, body)
+		VALUES ($1, $2, $3)
 		RETURNING id`
-	err = tx.QueryRow(query, accountId, body).Scan(&id)
+
+	if parentId != nil {
+		err = tx.QueryRow(query, accountId, parentId, body).Scan(&id)
+	} else {
+		err = tx.QueryRow(query, accountId, nil, body).Scan(&id)
+	}
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("error creating post in database: %w", err)
@@ -101,6 +106,19 @@ func (d *Database) CreatePost(accountId int, body string, tags []string, attachm
 }
 
 func (d *Database) GetPosts(username *string, tag *string, sort *api.GetPostsParamsSort, limit *int, page *int) ([]api.Post, error) {
+	tx, err := d.db.Beginx()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
 	var tempPosts []tempPost
 	// Do left joins because of potential query params
 	query := `
@@ -153,26 +171,26 @@ func (d *Database) GetPosts(username *string, tag *string, sort *api.GetPostsPar
 		}
 	}
 
-	err := d.db.Select(&tempPosts, query, args...)
+	err = tx.Select(&tempPosts, query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving posts: %w", err)
 	}
 
-	// Get attachments
-
+	// Convert tempPost to reg Post + get attachments
 	var posts []api.Post
-
 	for _, tempPost := range tempPosts {
+		attachments, err := d.GetPostAttachmentsById(*tx, tempPost.Id)
+		if err != nil {
+			return nil, fmt.Errorf("error getting attachments for posts: %w", err)
+		}
+		tempPost.Attachments = &attachments
 		posts = append(posts, *tempPost.ToPost())
-		// Get attachments for each one
 	}
 
 	return posts, nil
 }
 
-func (d *Database) GetPostById(postId int) (*api.Post, error) {
-	var post tempPost
-
+func (d *Database) GetPostById(postId string) (*api.Post, error) {
 	// Start the transaction
 	tx, err := d.db.Beginx()
 	if err != nil {
@@ -185,6 +203,8 @@ func (d *Database) GetPostById(postId int) (*api.Post, error) {
 			tx.Commit()
 		}
 	}()
+
+	var post tempPost
 
 	// Query for the post
 	query := `
@@ -214,7 +234,7 @@ func (d *Database) GetPostById(postId int) (*api.Post, error) {
 	return post.ToPost(), nil
 }
 
-func (d *Database) DeletePostById(postId int) error {
+func (d *Database) DeletePostById(postId string) error {
 	query := `
 		DELETE from post
 		WHERE id = $1`
@@ -229,7 +249,7 @@ func (d *Database) DeletePostById(postId int) error {
 	return nil
 }
 
-func (d *Database) GetUsernameById(account_id int) (*string, error) {
+func (d *Database) GetUsernameById(account_id string) (*string, error) {
 	var username string
 
 	query := `
@@ -247,8 +267,8 @@ func (d *Database) GetUsernameById(account_id int) (*string, error) {
 	return &username, nil
 }
 
-func (d *Database) GetIdByUsername(username string) (*int, error) {
-	var id int
+func (d *Database) GetIdByUsername(username string) (*string, error) {
+	var id string
 	query := `
 		SELECT id
 		FROM account
@@ -263,7 +283,7 @@ func (d *Database) GetIdByUsername(username string) (*int, error) {
 	return &id, nil
 }
 
-func (d *Database) GetPostCommentsById(postId int) ([]api.Post, error) {
+func (d *Database) GetPostCommentsById(postId string) ([]api.Post, error) {
 	var tempComments []tempPost
 	query := `
 	        SELECT p.id, p.parent_id, p.body, p.account_id, p.ratioed, p.timestamp, a.username
@@ -283,7 +303,7 @@ func (d *Database) GetPostCommentsById(postId int) ([]api.Post, error) {
 	return comments, nil
 }
 
-func (d *Database) GetPostAttachmentsById(tx sqlx.Tx, postId int) ([]api.Attachment, error) {
+func (d *Database) GetPostAttachmentsById(tx sqlx.Tx, postId string) ([]api.Attachment, error) {
 	var attachments []api.Attachment
 	query := `
 		SELECT src, type FROM attachment

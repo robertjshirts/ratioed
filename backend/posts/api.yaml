@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Posts API
+  title: Ratioed Posts API
   version: 1.0.0
 paths:
   /posts:
@@ -13,7 +13,7 @@ paths:
           required: false
           schema:
             type: string
-          description: Filter posts by author's username
+          description: Filter posts by author's username. Case sensitive (for now, hope to change soon).
         - name: tag
           in: query
           required: false
@@ -65,15 +65,10 @@ paths:
 
   /posts/{postId}:
     get:
-      summary: Get a specific post by ID
+      summary: Get a specific post by Id
       operationId: GetPostById
       parameters:
-        - name: postId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the post to retrieve
+        - $ref: '#/components/parameters/PostIdParam'
       responses:
         '200':
           description: The post with the given ID
@@ -88,12 +83,7 @@ paths:
       summary: Delete a post by ID
       operationId: DeletePostById
       parameters:
-        - name: postId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the post to delete
+        - $ref: '#/components/parameters/PostIdParam'
       responses:
         '204':
           description: Post deleted successfully
@@ -104,12 +94,7 @@ paths:
       summary: Get all comments for a specific post
       operationId: GetPostCommentsById
       parameters:
-        - name: postId
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the post to retrieve comments for
+        - $ref: '#/components/parameters/PostIdParam'
       responses:
         '200':
           description: The comments for the post with the given ID
@@ -121,6 +106,15 @@ paths:
           description: Post not found
 
 components:
+  parameters:
+    PostIdParam:
+      name: postId
+      in: path
+      description: The id of the post to perform an operation on
+      required: true
+      schema:
+        type: string
+
   requestBodies:
     NewPost:
       required: true
@@ -132,12 +126,17 @@ components:
               username: 
                 type: string
                 description: Author's username
+              parent_id:
+                type: string
+                description: Id of the parent post, if applicable (for comments)
               content:
                 $ref: '#/components/schemas/Content'
                 description: The content of a post
             required:
               - username
               - content
+            x-oapi-codegen-extra-tags:
+              db: "parent_id"
   schemas:
     Content:
       type: object
@@ -173,10 +172,10 @@ components:
       type: object
       properties: 
         id:
-          type: integer
+          type: string
           description: the id of the post
         parent_id:
-          type: integer
+          type: string
           description: the id of the parent of the post (if this field is not null, then the post is a comment)
           x-oapi-codegen-extra-tags:
             db: parent_id

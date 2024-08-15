@@ -9,7 +9,7 @@ import (
 type tempPost struct {
 	api.Post
 	api.Content
-	AccountId int `db:"account_id"`
+	AccountId string `db:"account_id"`
 }
 
 func (p *tempPost) ToPost() *api.Post {

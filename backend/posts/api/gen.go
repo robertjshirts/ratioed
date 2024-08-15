@@ -58,11 +58,11 @@ type Post struct {
 	Dislikes int     `json:"dislikes"`
 
 	// Id the id of the post
-	Id    int `json:"id"`
-	Likes int `json:"likes"`
+	Id    string `json:"id"`
+	Likes int    `json:"likes"`
 
 	// ParentId the id of the parent of the post (if this field is not null, then the post is a comment)
-	ParentId *int `db:"parent_id" json:"parent_id,omitempty"`
+	ParentId *string `db:"parent_id" json:"parent_id,omitempty"`
 
 	// Pfp Author's pfp
 	Pfp string `json:"pfp"`
@@ -80,9 +80,15 @@ type Post struct {
 // Posts An array of posts
 type Posts = []Post
 
+// PostIdParam defines model for PostIdParam.
+type PostIdParam = string
+
 // NewPost defines model for NewPost.
 type NewPost struct {
 	Content Content `json:"content"`
+
+	// ParentId Id of the parent post, if applicable (for comments)
+	ParentId *string `json:"parent_id,omitempty"`
 
 	// Username Author's username
 	Username string `json:"username"`
@@ -90,7 +96,7 @@ type NewPost struct {
 
 // GetPostsParams defines parameters for GetPosts.
 type GetPostsParams struct {
-	// Username Filter posts by author's username
+	// Username Filter posts by author's username. Case sensitive (for now, hope to change soon).
 	Username *string `form:"username,omitempty" json:"username,omitempty"`
 
 	// Tag Filter posts by hashtag
@@ -113,6 +119,9 @@ type GetPostsParamsSort string
 type CreatePostJSONBody struct {
 	Content Content `json:"content"`
 
+	// ParentId Id of the parent post, if applicable (for comments)
+	ParentId *string `json:"parent_id,omitempty"`
+
 	// Username Author's username
 	Username string `json:"username"`
 }
@@ -130,13 +139,13 @@ type ServerInterface interface {
 	CreatePost(ctx echo.Context) error
 	// Delete a post by ID
 	// (DELETE /posts/{postId})
-	DeletePostById(ctx echo.Context, postId string) error
-	// Get a specific post by ID
+	DeletePostById(ctx echo.Context, postId PostIdParam) error
+	// Get a specific post by Id
 	// (GET /posts/{postId})
-	GetPostById(ctx echo.Context, postId string) error
+	GetPostById(ctx echo.Context, postId PostIdParam) error
 	// Get all comments for a specific post
 	// (GET /posts/{postId}/comments)
-	GetPostCommentsById(ctx echo.Context, postId string) error
+	GetPostCommentsById(ctx echo.Context, postId PostIdParam) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -203,7 +212,7 @@ func (w *ServerInterfaceWrapper) CreatePost(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) DeletePostById(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "postId" -------------
-	var postId string
+	var postId PostIdParam
 
 	err = runtime.BindStyledParameterWithOptions("simple", "postId", ctx.Param("postId"), &postId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -219,7 +228,7 @@ func (w *ServerInterfaceWrapper) DeletePostById(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) GetPostById(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "postId" -------------
-	var postId string
+	var postId PostIdParam
 
 	err = runtime.BindStyledParameterWithOptions("simple", "postId", ctx.Param("postId"), &postId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -235,7 +244,7 @@ func (w *ServerInterfaceWrapper) GetPostById(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) GetPostCommentsById(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "postId" -------------
-	var postId string
+	var postId PostIdParam
 
 	err = runtime.BindStyledParameterWithOptions("simple", "postId", ctx.Param("postId"), &postId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -286,26 +295,27 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/9RX32/bNhD+Vw7cgKaAHNtrMQx+S1NsMDBsQds9FcVAi2ebrUSy5CmJEPh/H46ULNmS",
-	"82PJHvYUmeTx7vvu7uPlTuS2dNagoSAWd8Lj9woDvbNKY1z4A2+ubCD+zK0hNPFTOlfoXJK2Zvo1WMNr",
-	"Id9iKfnLeevQU3NDz+xHj2uxED9MO6fTZBaml82xXSaqgN7IEtlEYci9duxJLMRFRVvrXwXYH8kE1Q7F",
-	"QgTy2mzEbpdFENqjEovPonewDeTL3sauvmJOYndoRL5CXmki4yguiGS+LRsYh/iCz4eBftoi/PXhdwi2",
-	"8jnC2nqgLYLs7hkE3i6MXcU7YNeH9miqkiHqUm4Y37VWaHvoTjASd7MY9pCJTFx26TrE2fkOJ/EGDpKB",
-	"OhvoVYC+TSY0YRkeqoMe1XtKhPRe1vx7ZVU97p13+t7P4UMDOoNVRZAPGM/E7cRKpye5VbhBM8Fb8nJC",
-	"cpMArsQi+dsdUxhXx8hrW+W5HaB0KPS3ZF1qo0vO9GzvUBvCDXo+qdWQDqZAqz4ZYsz0kR6c9Gjo70c4",
-	"igf7buFM8w8dYK2xUKADGEtgqqLI+JDpTuoAEnJbcuJfD8N9TK66QDlfbu3u0Q/eHelAz5KGI0iXDQ4d",
-	"gOUh6wIPW1sVClYISgdXyBoVSAbT3NUQcaNpC8ZCUwsZSKOgsPk3VNDuldYjxKyA9dDWQI+NlbUFShMb",
-	"Q5cYSJZjIGH58c9ffp7NIQED2koCj84jBq64GDzeypyAr0n7e0A3MkDuURIqOIv7nJs8t17FyywoSXIl",
-	"A3Jka+tLSWIhlCSc8PExXl9S0bUSWV/WUyrbHuty2BZ4r5v6tJ1q3xFxuzAQBYhL28Ujj9SyKAcDFWNA",
-	"2qwtW5OmgreiZ7i4WrKOow/J8fx8dj7jC6xDI50WC/HmfHb+hlFL2kb/U9cGvcEoMaw88WVeKrEQvyFd",
-	"NSE76WWJhD6IxedjjL/qgtAneLCqQY7kRfPB7xX6WmQipbOfiG4AGCTwIW9bGbYkNyd8pJ0nXP/Reuou",
-	"58qEM4VrWRUEfPL1CUfBejrw1D6xMvDzwaaj7+vYe+TkBsFU5Qo994xH8qivEc7mE+4dBdoovD0ViUtP",
-	"ehfJXqPnQ40eD6Dx3dYsOCacgzor5S3MZ7NTvgtdahojvHP4hVsyOGtCekF+ms2eNCE+s3uO9a7Qgbrm",
-	"jLNbVZbS16kBQBZFu5cJ17zRh31yGRXvKr2V3RRcnwryYFCetlPybsDL/Em8PEzHED6v7wU7VHmOIayr",
-	"oqiPiEgIQYLBmzQU8H6Sj+kd/1mqXRK/AgmHFL2P6+zuXb1UDwkKl+Dy/cE0wE9HurspPBaxXs3HEMTx",
-	"KH5f5w/r8O1QviNByfExQZl4e9KCJ5W1rYw64jHRADJhWtWwfM8X3ae+/54vlg2N1/8lY7MXrdAwVqKf",
-	"9rMFTzqMb6Ov0TTMPT0FsachOMz1WucHiRiW9LSZKh98Iy+bc8/PVjvIBv7H7/+fuj6a3pz4grksikMn",
-	"R8nlwHb/BAAA//8xBz/dqxAAAA==",
+	"H4sIAAAAAAAC/9RX3W7cNhN9lQG/D4gNyLvrJiiKvXMctDBQtEaSXgVBwRVHKyYSyZCj2Atj370YUlpp",
+	"JW0cN8lF7yRxyDnncP70IHJbO2vQUBDrB+GklzUS+vh2awPdqFv+xq8KQ+61I22NWIu3JYJWYAugEsHZ",
+	"QEAWHPrC+hqkAevQSzYGa0QmNG9ykkqRCSNr5Ld4vsiEx0+N9qjEmnyDmQh5ibVkn7RzbBnIa7MV+/0+",
+	"GWOgl1ZpjDD/wDtGyo+5NYQmPkrnKp1HAMsPgSE/DM51nuFRe8Jg2/89FmIt/rfshVmmbWF53ZrtMxYK",
+	"Df2t1VSYm16UaBS1yUAX0ELaVAhnhfWQ27pmB+ciGxPNRBPQJ53GDq4aKq1/FuBgMtm+H2r6TgwMO6rv",
+	"D3vs5gPm1GvbXwR/abkziisimZd1K9SxgsHn8yHy1+vfIdjG5whMmWWR/TkzvNOHuaN4haU92o+mqZmi",
+	"ruWW+X3WCu2A3QlF4moWYU+VyMR1HxDHPHvf4STfMEyKZwGGezKhCevwWKQNpD5IIqT3csfvG6t28955",
+	"Zeh9Aa9b0hlsGoJ8ongm7i+sdPoitwq3aC7wnry8ILlNBDdinfztxxLGr3Pidcn4rTmmdKj0x7S71kbX",
+	"fNOrg0NtCLfo2XIuDWlSn+ai7SsdfCHdR35Syg+r4pnmFx2g0Fgp0AGMJTBNVWVsZHpLHUB2ReH8X91U",
+	"j5NvyxXuC9WDV2cUiTUb5+paS0MHiFW6xx1K21QKNghKB1fJHSqQzKU9q9XhTlMJxkIbCRlIo6Cy+UdU",
+	"0K3V1iPESwHroYuAgRgbayuUJqaFrjGQrOdIws2bP3/5eXUJiRhQKQk8Oo8YON4ieLyXOQEfk9YPhO5k",
+	"gNyjJFRwFtf5avLcehUPs6AkyY0MyMi44UkSa6Ek4QWb/+h6rrlpDqzTVXYZ1t9hF9+DXBrKdip5Z0rb",
+	"lYFYfjiyXTT5ykoWi8GkhjEhbQobW7ymipdet8ESEcDV7Q1Xc/QhAbhcrBYrPsg6NNJpsRbPF6vFc2Yv",
+	"qYw4lq4Dv8VYaA4jyI0Sa/Eb0m0LfTjnvBtz/VVXhD7RhM0O5Ph+FnAtA0JAEzTpz203N/Yug9I65PjI",
+	"S2m2CMFac77opp9PDfpdP/4MLvD0wJM9hq6UoSS5PeEjrTzh+DfWU384RzScKSxkUxGw5fkJR8F6OvLU",
+	"NWYZuOnw1tmuPNfFnNwimKbeoGctPZLHKPPlBeecAm0U3p9C4tIg0CM5lPbLaWmfB9D67mKdp9oE6qyW",
+	"93C5Wp3yXela05zgvcP3nMrBWRNS4/lptXrS5PqNWTeuk5UO1Cd1nPiaupZ+lxIGZFV1a1kc2Kd5dR0r",
+	"5W3qsP10vjsF8miAX3bT+36iy+WTdHlcjil9/n4o9KHJcwyhaKpqNxIiMQQJBu/SKMHrqdwsH9JvzD4V",
+	"zQoJpxK9it/Z3ctd/OMZFaA58L3JcvgjNhNAL6b1OjJLaMbMMvHi5A6eTArbGDUSIOEHmdrjZgc3r/ig",
+	"L5XZH0F09V0jIsyFxNvDDMATCU8EW/0ZTUv46crFHILgMNeFznv91FwILbs/wsd62HVr9x8WuaN6+C38",
+	"7qpX1bGT0TUwsP0/AQAA///HVZrHAREAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
