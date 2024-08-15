@@ -6,7 +6,7 @@ const timeline = response as Post[];
 </script>
 
 <template>
-  <div class="mb-6 items-center justify-between">
+  <div class="mb-6 flex items-center justify-between">
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">
       <NuxtLink

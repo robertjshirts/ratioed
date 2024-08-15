@@ -1,11 +1,12 @@
 <script setup lang="ts">
-const status = ref(true);
+const status = ref(false);
 </script>
 /
 
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div v-if="status" class="flex flex-col pb-8">
+    <div v-if="status" class="flex flex-col items-center pb-8">
+      <span>welcome back,</span>
       <img
         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUxlLWqyirlf0ApuqexYrx3jH9P031hUiCOw&s"
         alt=""
