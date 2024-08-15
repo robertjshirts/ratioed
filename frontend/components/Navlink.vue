@@ -1,17 +1,21 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   to: string;
-  icon: string;
+  activeIcon: string;
+  inactiveIcon: string;
 }>();
 </script>
 
 <template>
   <NuxtLink
     :to="to"
-    class="hover: flex w-full items-center rounded-lg px-4 py-2 text-lg font-bold transition-all"
-    :class="{ 'bg-white': $route.path == to, 'text-black': $route.path == to }"
+    class="hover: flex w-full items-center rounded-lg p-2 text-xl font-bold text-gray-400 transition-all"
+    :class="{ 'text-white': $route.path == props.to }"
   >
-    <Icon :name="icon" class="me-2" />
+    <Icon
+      :name="$route.path == props.to ? activeIcon : inactiveIcon"
+      class="me-4"
+    />
     <slot />
   </NuxtLink>
 </template>

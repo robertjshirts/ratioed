@@ -1,7 +1,9 @@
 <template>
   <Topbar />
-  <div class="mt-16">
+  <div class="mx-auto max-w-7xl">
     <Sidebar />
-    <NuxtPage />
+    <div class="pl-64">
+      <NuxtPage></NuxtPage>
+    </div>
   </div>
 </template>
