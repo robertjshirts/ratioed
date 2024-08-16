@@ -11,7 +11,7 @@
           Log in
         </button>
         <button class="ms-4 flex">
-          <Icon name="carbon:overflow-menu-vertical" class="text-2xl" />
+          <Icon name="ph:dots-three-outline-vertical-fill" class="text-xl" />
         </button>
       </div>
     </div>

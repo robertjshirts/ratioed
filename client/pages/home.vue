@@ -1,9 +1,4 @@
-<script setup lang="ts">
-import type { Post } from "~/types/global";
-import response from "~/assets/mocks/timeline.json";
-
-const timeline = response as Post[];
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="mb-6 flex items-center justify-between">
@@ -30,6 +25,6 @@ const timeline = response as Post[];
     </div>
   </div>
   <div>
-    <Post v-for="post in timeline" v-bind="post" class="mb-2" />
+    <!-- <Post v-for="post in timeline" v-bind="post" class="mb-2" /> -->
   </div>
 </template>
