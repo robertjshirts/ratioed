@@ -7,7 +7,7 @@ defineProps<Post>();
 <template>
   <article
     @click="$router.push(`/${username}/posts/${id}`)"
-    class="flex w-auto cursor-pointer rounded-lg border border-[#1a1a1a] p-4 text-sm transition-all hover:bg-[#1c1c1d] md:text-base"
+    class="flex w-auto cursor-pointer rounded-lg border border-[#3f3f3f] p-4 text-sm transition-all hover:bg-[#1c1c1d] md:text-base"
   >
     <img
       :src="pfp"
