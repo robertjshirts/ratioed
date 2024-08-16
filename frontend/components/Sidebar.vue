@@ -39,11 +39,7 @@ const status = true;
       <button class="mb-2 mt-4 rounded-md border py-2">Log in</button>
     </div>
     <div v-if="status" class="pt-8">
-      <button
-        class="w-full rounded-3xl bg-white py-3 text-black transition-all hover:bg-gray-200"
-      >
-        Post
-      </button>
+      <PostModal />
     </div>
   </div>
 </template>

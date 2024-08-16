@@ -28,20 +28,7 @@ defineProps<Post>();
           alt="image failed to load"
           class="mt-2 w-96 rounded-lg border border-[#272727] bg-cover"
         />
-        <div class="mt-4 flex">
-          <button class="flex items-center text-green-500">
-            <Icon name="carbon:thumbs-up" />
-            <p class="ms-2">{{ likes }}</p>
-          </button>
-          <button class="ms-8 flex items-center text-red-500">
-            <Icon name="carbon:thumbs-down" />
-            <p class="ms-2">{{ dislikes }}</p>
-          </button>
-          <button class="ms-8 flex items-center">
-            <Icon name="carbon:chat" />
-            <p class="ms-2">12</p>
-          </button>
-        </div>
+        <div class="mt-4 flex"></div>
       </div>
       <div v-else class="m-4 text-center text-gray-400">
         this post has been ratioed
