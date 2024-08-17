@@ -1,17 +1,18 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 type DatabaseInterface interface {
-	CreateAccount(email string, username string, bio string, pfp string) (*int, error)
+	CreateAccount(email string, username string, bio *string, pfp *string) (*Account, error)
 	GetAccounts(username *string) ([]Account, error)
-	GetAccountById(accountId int) (*Account, error)
-	UpdateAccountById(accountId int, username *string, bio *string, pfp *string) (*Account, error)
-	DeleteAccountById(accountId int) error
+	GetAccountById(accountId string) (*Account, error)
+	UpdateAccountById(accountId string, username *string, bio *string, pfp *string) (*Account, error)
+	DeleteAccountById(accountId string) error
 }
 
 type Server struct {
@@ -25,7 +26,19 @@ func NewServer(database DatabaseInterface) *Server {
 }
 
 func (s *Server) CreateAccount(ctx echo.Context) error {
-	return ctx.JSON(http.StatusNotImplemented, "CreateAccount not impl")
+	var newAccount NewAccount
+	if err := ctx.Bind(&newAccount); err != nil {
+		return ctx.JSON(http.StatusBadRequest, fmt.Sprintf("Invalid request body: %v", err))
+	}
+
+	fmt.Printf("%v", newAccount)
+
+	account, err := s.db.CreateAccount(newAccount.Email, newAccount.Username, newAccount.Bio, newAccount.Pfp)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, fmt.Sprintf("There was an error creating the account: %v", err))
+	}
+
+	return ctx.JSON(http.StatusCreated, account)
 }
 
 func (s *Server) DeleteAccountById(ctx echo.Context, accountId int) error {

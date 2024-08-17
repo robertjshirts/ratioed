@@ -7,10 +7,10 @@ DELETE FROM account;
 DELETE FROM attachment;
 
 -- Insert test data into account table
-INSERT INTO account (id, email, username, password, bio) VALUES
-('11111111-1111-1111-1111-111111111111', 'alice@example.com', 'alice', 'password10', 'Bio for Alice'),
-('22222222-2222-2222-2222-222222222222', 'bob@example.com', 'bob', 'password11', 'Bio for Bob'),
-('33333333-3333-3333-3333-333333333333', 'carol@example.com', 'carol', 'password12', 'Bio for Carol');
+INSERT INTO account (id, email, username, bio) VALUES
+('11111111-1111-1111-1111-111111111111', 'alice@example.com', 'alice', 'Bio for Alice'),
+('22222222-2222-2222-2222-222222222222', 'bob@example.com', 'bob', 'Bio for Bob'),
+('33333333-3333-3333-3333-333333333333', 'carol@example.com', 'carol', 'Bio for Carol');
 
 -- Insert test data into post table
 INSERT INTO post (id, parent_id, body, account_id, ratioed, timestamp) VALUES

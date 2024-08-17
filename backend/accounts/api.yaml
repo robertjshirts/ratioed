@@ -4,7 +4,7 @@ info:
   title: Ratioed Accounts API
   version: 1.0.0
 paths:
-  /account:
+  /accounts:
     post:
       summary: Create a new account
       operationId: CreateAccount
@@ -34,7 +34,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Accounts'
-  /account/{accountId}:
+  /accounts/{accountId}:
     get:
       summary: Get a single account
       operationId: GetAccountById
@@ -106,7 +106,6 @@ components:
             properties:
               email:
                 type: string
-                format: email
                 pattern: '^.*@.*\..*$'
                 description: Email of the account
               username:
@@ -117,7 +116,6 @@ components:
                 description: Bio of the account
               pfp:
                 type: string
-                format: uri
                 description: Uri for a pfp for the account
             required:
               - email
@@ -143,9 +141,11 @@ components:
     Account:
       type: object
       properties:
+        id:
+          type: string
+          description: Unique identifier for the account (UUID)
         email:
           type: string
-          format: email
           pattern: '^.*@.*\..*$'
           description: Email of the account
         username:

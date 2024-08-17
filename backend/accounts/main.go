@@ -10,12 +10,16 @@ import (
 	middleware "github.com/oapi-codegen/echo-middleware"
 
 	"github.com/robertjshirts/ratioed/backend/accounts/api"
+	"github.com/robertjshirts/ratioed/backend/accounts/db"
 	"github.com/robertjshirts/ratioed/backend/accounts/utils"
 )
 
 func main() {
 
-	server := api.NewServer(nil)
+	database := db.NewDatabase()
+	defer database.Close()
+
+	server := api.NewServer(database)
 
 	e := echo.New()
 

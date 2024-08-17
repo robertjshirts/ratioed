@@ -16,7 +16,6 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v4"
 	"github.com/oapi-codegen/runtime"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // Account defines model for Account.
@@ -25,7 +24,10 @@ type Account struct {
 	Bio string `json:"bio"`
 
 	// Email Email of the account
-	Email openapi_types.Email `json:"email"`
+	Email string `json:"email"`
+
+	// Id Unique identifier for the account (UUID)
+	Id *string `json:"id,omitempty"`
 
 	// Pfp Uri for a pfp for the account
 	Pfp string `json:"pfp"`
@@ -46,7 +48,7 @@ type NewAccount struct {
 	Bio *string `json:"bio,omitempty"`
 
 	// Email Email of the account
-	Email openapi_types.Email `json:"email"`
+	Email string `json:"email"`
 
 	// Pfp Uri for a pfp for the account
 	Pfp *string `json:"pfp,omitempty"`
@@ -79,7 +81,7 @@ type CreateAccountJSONBody struct {
 	Bio *string `json:"bio,omitempty"`
 
 	// Email Email of the account
-	Email openapi_types.Email `json:"email"`
+	Email string `json:"email"`
 
 	// Pfp Uri for a pfp for the account
 	Pfp *string `json:"pfp,omitempty"`
@@ -109,19 +111,19 @@ type UpdateAccountByIdJSONRequestBody UpdateAccountByIdJSONBody
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Get all accounts
-	// (GET /account)
+	// (GET /accounts)
 	GetAccounts(ctx echo.Context, params GetAccountsParams) error
 	// Create a new account
-	// (POST /account)
+	// (POST /accounts)
 	CreateAccount(ctx echo.Context) error
 	// Delete an account
-	// (DELETE /account/{accountId})
+	// (DELETE /accounts/{accountId})
 	DeleteAccountById(ctx echo.Context, accountId AccountIdParam) error
 	// Get a single account
-	// (GET /account/{accountId})
+	// (GET /accounts/{accountId})
 	GetAccountById(ctx echo.Context, accountId AccountIdParam) error
 	// Update an account
-	// (PATCH /account/{accountId})
+	// (PATCH /accounts/{accountId})
 	UpdateAccountById(ctx echo.Context, accountId AccountIdParam) error
 }
 
@@ -233,32 +235,32 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.GET(baseURL+"/account", wrapper.GetAccounts)
-	router.POST(baseURL+"/account", wrapper.CreateAccount)
-	router.DELETE(baseURL+"/account/:accountId", wrapper.DeleteAccountById)
-	router.GET(baseURL+"/account/:accountId", wrapper.GetAccountById)
-	router.PATCH(baseURL+"/account/:accountId", wrapper.UpdateAccountById)
+	router.GET(baseURL+"/accounts", wrapper.GetAccounts)
+	router.POST(baseURL+"/accounts", wrapper.CreateAccount)
+	router.DELETE(baseURL+"/accounts/:accountId", wrapper.DeleteAccountById)
+	router.GET(baseURL+"/accounts/:accountId", wrapper.GetAccountById)
+	router.PATCH(baseURL+"/accounts/:accountId", wrapper.UpdateAccountById)
 
 }
 
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"H4sIAAAAAAAC/9RW32/cNgz+VwitD01g+K5Ln+5pSbsO2UNRbA320HYAI9NnZbakSHSzW+D/fZDkX3e+",
+	"LuvQLujLwZZJHvl9H0ndC2kaazRp9mJzLyw6bIjJxbdzKU2r+bJ4E47DSUFeOmVZGS024m1FoAowJXBF",
+	"gMka2IAlVxrXAGowlhwGezBaZEIFP4tciUxobEhsBA7/IjLh6LZVjgqxYddSJrysqMHwz7yzwVhppi05",
+	"0XVdsibPF6ZQFBN+TXd9zuFNGs2UHtHaWsmYx+rGh+TvZ7GtC1lyH+RamWWpF8oc1CmyISfPTumt6DJB",
+	"Dap66fxjOF66W2QmFwx+z09/yE/fv8/z0yfH4trSLqNeOQWlcYBgSxufHsiu9eQS5otQ/ZcHS+zmFL3r",
+	"651F/jB6mOsbkjzxNLHaZeLKFsj0qFT9J0iDqJHFRrROfT2EH0awGzpj3qbfhJJVcQQbrW7bMElIsyoV",
+	"uUPk4enV1eXLk2+Mxn9slCySk/JfNk02cBppVExNfHjiqBQb8d1qGtqrXgerQQSTftA53MVMPMnWKd79",
+	"Gmx7aRA6cuctV9PbqwGWn397K3qFhUDp61RjxWyTLJUuo8JYcR2+/BLalgoYsofzN5ciEx/J+YTfs3yd",
+	"r0OOxpJGq8RGnOXr/CxpqIqprXBW+5airsctclmIjfiJeMQn29tZ7w4JO4fECLSeivlqsuhYYQ0NsqyC",
+	"gdGAMPCTwyvjgP7ExtaUwQ1KuDNtXSRzuDY3KP+I5+k3A4y/xDKHF+gJPGmvWH2kYendtuR209abKWGx",
+	"5EYRfQgq8tZon1j7fr3+rGn5LwTjE5OHqNXKcxD5wAVwhdxXH4Qfq4EZ9FFnbdOg2yWGAOt6dI+tavwR",
+	"Ll84mq2C+U7ffaqCvbW/mu38bgHXsy8N1zG0wjVIxjKKcSDsw5GKBARNd3smo9ZX9+M1qEtjpyamJVwv",
+	"43mfzMUuXpoOGuBYFZPJ6uBSd0Rjz5dzr3cC30pJ3pdtXe8g5VgE2J8npA/nOrZchaEuIzZPtWGozXZL",
+	"BSh9kvzOPuVnnPprcAqKk8Y5kjzAd3IAcQIm3DhxUsMD0+Mr4bf+v0Q3rMc7xakrx2GmelaOUPnaMJSm",
+	"1cWxlgWv9LamOYY2xFyiuHeF+3JAfmbz718ku8ejoo2JFHPgHr8nEjp7PdF13d8BAAD//0MIaCL0DQAA",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

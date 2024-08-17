@@ -10,7 +10,6 @@ CREATE TABLE account (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid (),
     email VARCHAR(100) NOT NULL UNIQUE,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
     bio TEXT NOT NULL DEFAULT '',
     pfp VARCHAR(255)
 );
@@ -24,7 +23,7 @@ CREATE TABLE post (
     body TEXT NOT NULL,
     account_id uuid NOT NULL,
     ratioed BOOLEAN NOT NULL DEFAULT FALSE,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE,
     FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
 );
