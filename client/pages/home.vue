@@ -1,4 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const supabase = useSupabaseClient();
+
+const posts = ref<any>([]);
+
+supabase
+  .channel("posts")
+  .on(
+    "postgres_changes",
+    { event: "INSERT", schema: "public", table: "posts" },
+    (payload) => {
+      posts.value.push(payload.new);
+    },
+  )
+  .subscribe();
+</script>
 
 <template>
   <div class="mb-6 flex items-center justify-between">
@@ -24,7 +39,5 @@
       </NuxtLink>
     </div>
   </div>
-  <div>
-    <!-- <Post v-for="post in timeline" v-bind="post" class="mb-2" /> -->
-  </div>
+  <Post />
 </template>

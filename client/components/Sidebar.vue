@@ -15,7 +15,7 @@ const status = false;
         <span class="mt-2 text-lg text-gray-400">@metalcoreenjoyer</span>
       </div>
     </div>
-    <nav class="border-b border-[#3f3f3f] py-5" :class="{ 'border-y': status }">
+    <nav class="border-b py-5" :class="{ 'border-y': status }">
       <Navlink to="/home" active-icon="ph:house-fill" inactive-icon="ph:house"
         >Home
       </Navlink>

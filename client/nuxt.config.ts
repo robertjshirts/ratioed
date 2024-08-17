@@ -8,6 +8,9 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@nuxtjs/supabase",
   ],
+  supabase: {
+    redirect: false,
+  },
   googleFonts: {
     families: {
       Outfit: true,

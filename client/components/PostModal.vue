@@ -25,15 +25,13 @@ function handleFileAttachment(event: any) {
     v-if="showModal"
     class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-[#0f0f0f]/80 bg-black bg-opacity-10 backdrop-blur"
   >
-    <div
-      class="flex flex-col rounded-lg border border-[#3f3f3f] bg-[#0f0f0f] p-3 text-white"
-    >
+    <div class="flex flex-col rounded-lg border bg-[#0f0f0f] p-3 text-white">
       <Icon
         @click="closeModal"
         name="ph:x-circle"
         class="cursor-pointer text-2xl"
       />
-      <div class="mt-8 flex border-b border-[#3f3f3f] px-3">
+      <div class="mt-8 flex border-b px-3">
         <div class="mb-8 flex">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUxlLWqyirlf0ApuqexYrx3jH9P031hUiCOw&s"
@@ -64,7 +62,7 @@ function handleFileAttachment(event: any) {
       <div class="ms-3 mt-3 flex items-center justify-between">
         <div class="relative">
           <input
-            @change="(event) => handleFileAttachment(event)"
+            @change="(event: any) => handleFileAttachment(event)"
             type="file"
             class="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
           />
