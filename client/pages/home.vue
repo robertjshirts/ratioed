@@ -1,18 +1,11 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+import type { Database, Tables } from "~/types";
+const supabase = useSupabaseClient<Database>();
 
-const posts = ref<any>([]);
+const posts = ref();
 
-supabase
-  .channel("posts")
-  .on(
-    "postgres_changes",
-    { event: "INSERT", schema: "public", table: "posts" },
-    (payload) => {
-      posts.value.push(payload.new);
-    },
-  )
-  .subscribe();
+const { data, error } = await supabase.from("posts").select(`*`);
+console.log(data, error);
 </script>
 
 <template>
@@ -39,5 +32,7 @@ supabase
       </NuxtLink>
     </div>
   </div>
-  <Post />
+  <div v-for="post in posts">
+    {{ post }}
+  </div>
 </template>

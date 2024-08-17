@@ -1,5 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps();
+</script>
 
 <template>
-  <p>hello!</p>
+  <div>hello</div>
 </template>
