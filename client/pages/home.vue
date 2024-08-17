@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import type { Database, Tables } from "~/types";
-const supabase = useSupabaseClient<Database>();
-
-const posts = ref();
-
-const { data, error } = await supabase.from("posts").select(`*`);
-console.log(data, error);
+const user = useSupabaseUser();
 </script>
 
 <template>
@@ -32,7 +26,5 @@ console.log(data, error);
       </NuxtLink>
     </div>
   </div>
-  <div v-for="post in posts">
-    {{ post }}
-  </div>
+  <div>{{ user }}</div>
 </template>
