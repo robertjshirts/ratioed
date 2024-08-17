@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="sticky top-0 border-b border-[#3f3f3f] bg-[#0f0f0f]/80 backdrop-blur"
-  >
+  <div class="/80 sticky top-0 border-b bg-inherit backdrop-blur">
     <div class="mx-auto flex max-w-7xl justify-between px-2 py-3">
       <span class="text-3xl font-bold">ratioed</span>
       <div class="flex items-center">
