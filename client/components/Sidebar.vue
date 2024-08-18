@@ -1,14 +1,11 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
-const topborder = computed(() => {
-  return user;
-});
 </script>
 
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div v-if="user" class="flex flex-col py-8 pl-2">
+    <div v-if="user" class="flex flex-col border-b py-8 pl-2">
       <img
         :src="user.user_metadata.avatar_url"
         alt=""
@@ -19,7 +16,7 @@ const topborder = computed(() => {
         <span class="mt-2 text-lg text-gray-400">@metalcoreenjoyer</span>
       </div>
     </div>
-    <nav class="border-b py-5">
+    <nav class="border-b border-[#3f3f3f] py-5">
       <Navlink to="/home" active-icon="ph:house-fill" inactive-icon="ph:house"
         >Home
       </Navlink>
