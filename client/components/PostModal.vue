@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { Database } from "~/types";
+const supabase = useSupabaseClient<Database>();
 const user = useSupabaseUser();
+
 const showModal = ref(false);
+const content = ref("");
 const attachmentUrl = ref("");
 
 function closeModal() {
@@ -12,6 +16,14 @@ function handleFileAttachment(event: any) {
   const src = URL.createObjectURL(event.target.files[0]);
   console.log(src);
   attachmentUrl.value = src;
+}
+
+async function makePost() {
+  const { error } = await supabase.from("posts").insert({
+    profile_id: user.value.id,
+    content: content.value,
+  });
+  closeModal();
 }
 </script>
 
@@ -41,6 +53,7 @@ function handleFileAttachment(event: any) {
           />
           <div class="ms-4 mt-2 flex flex-col">
             <textarea
+              v-model="content"
               class="mb-4 w-96 resize-none border-none bg-inherit text-xl outline-none"
               placeholder="What is happening?"
             />
@@ -73,7 +86,7 @@ function handleFileAttachment(event: any) {
           </div>
         </div>
         <button
-          @click="closeModal"
+          @click="makePost"
           class="rounded-3xl bg-white px-5 py-2 text-sm font-bold text-black"
         >
           Post

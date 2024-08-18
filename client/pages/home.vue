@@ -1,9 +1,19 @@
 <script setup lang="ts">
-const user = useSupabaseUser();
+import type { Database } from "~/types";
+const supabase = useSupabaseClient<Database>();
+
+const timeline = ref<any[]>([]);
+
+const { data, error } = await supabase
+  .from("posts")
+  .select(`*, profiles:profile_id (*)`);
+if (data) {
+  timeline.value = data;
+}
 </script>
 
 <template>
-  <div class="mb-6 flex items-center justify-between">
+  <div class="mb-2 flex items-center justify-between">
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">
       <NuxtLink
@@ -26,5 +36,5 @@ const user = useSupabaseUser();
       </NuxtLink>
     </div>
   </div>
-  <div>{{ user }}</div>
+  <Post v-for="post in timeline" v-bind="post" />
 </template>
