@@ -26,4 +26,5 @@ const user = useSupabaseUser();
       </NuxtLink>
     </div>
   </div>
+  <div>{{ user }}</div>
 </template>

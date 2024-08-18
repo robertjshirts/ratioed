@@ -19,7 +19,7 @@ const topborder = computed(() => {
         <span class="mt-2 text-lg text-gray-400">@metalcoreenjoyer</span>
       </div>
     </div>
-    <nav class="border-b py-5" :class="{ 'border-t': topborder }">
+    <nav class="border-b py-5">
       <Navlink to="/home" active-icon="ph:house-fill" inactive-icon="ph:house"
         >Home
       </Navlink>
