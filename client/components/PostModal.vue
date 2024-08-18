@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const user = useSupabaseUser();
 const showModal = ref(false);
 const attachmentUrl = ref("");
 
@@ -34,7 +35,7 @@ function handleFileAttachment(event: any) {
       <div class="mt-8 flex border-b px-3">
         <div class="mb-8 flex">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUxlLWqyirlf0ApuqexYrx3jH9P031hUiCOw&s"
+            :src="user.user_metadata.avatar_url"
             class="h-12 w-12 rounded-full"
             alt="pfp failed to load"
           />
