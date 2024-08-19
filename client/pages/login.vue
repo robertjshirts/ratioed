@@ -19,6 +19,7 @@ async function signInWithOtp() {
       data: {
         username: username.value,
       },
+      emailRedirectTo: "http://localhost:3000/confirm",
     },
   });
   console.log(user);
@@ -29,6 +30,9 @@ async function signInWithGoogle() {
   loading.value = true;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
+    options: {
+      redirectTo: "http://localhost:3000/confirm",
+    },
   });
   errorOccured.value = error;
   loading.value = false;
