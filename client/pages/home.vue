@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Database } from "~/types";
 const supabase = useSupabaseClient<Database>();
+const user = useSupabaseUser();
 
 const timeline = ref<any[]>([]);
 
@@ -13,6 +14,7 @@ if (data) {
 </script>
 
 <template>
+  <div>{{ user }}</div>
   <div class="mb-2 flex items-center justify-between">
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">

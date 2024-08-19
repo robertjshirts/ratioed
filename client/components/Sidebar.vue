@@ -1,18 +1,28 @@
 <script setup lang="ts">
+import type { Database } from "~/types";
+const supabase = useSupabaseClient<Database>();
 const user = useSupabaseUser();
+
+const userProfile = ref();
+if (user.value) {
+  const { data } = await supabase
+    .from("profiles")
+    .select("username, avatar_url")
+    .eq("id", user.value.id)
+    .single();
+
+  if (data) {
+    userProfile.value = data;
+  }
+}
 </script>
 
 <template>
   <div class="fixed top-16 box-border h-full w-60">
     <div v-if="user" class="flex flex-col border-b py-8 pl-2">
-      <img
-        :src="user.user_metadata.avatar_url"
-        alt=""
-        class="w-24 rounded-full"
-      />
+      <img :src="userProfile.avatar_url" alt="" class="w-24 rounded-full" />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">{{ user.user_metadata.full_name }}</span>
-        <span class="mt-2 text-lg text-gray-400">@metalcoreenjoyer</span>
+        <span class="mt-4 text-lg">{{ userProfile.username }}</span>
       </div>
     </div>
     <nav class="border-b border-[#3f3f3f] py-5">
