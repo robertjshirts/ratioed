@@ -2,19 +2,6 @@
 import type { Database } from "~/types";
 const supabase = useSupabaseClient<Database>();
 const user = useSupabaseUser();
-
-const userProfile = ref();
-if (user.value) {
-  const { data } = await supabase
-    .from("profiles")
-    .select("username, avatar_url")
-    .eq("id", user.value.id)
-    .single();
-
-  if (data) {
-    userProfile.value = data;
-  }
-}
 </script>
 
 <template>
@@ -31,7 +18,7 @@ if (user.value) {
       </div>
     </div>
     <nav class="border-b border-[#3f3f3f] py-5">
-      <Navlink to="/home" active-icon="ph:house-fill" inactive-icon="ph:house"
+      <Navlink to="/" active-icon="ph:house-fill" inactive-icon="ph:house"
         >Home
       </Navlink>
       <Navlink

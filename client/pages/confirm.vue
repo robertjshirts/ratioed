@@ -5,8 +5,7 @@ watch(
   user,
   () => {
     if (user.value) {
-      // Redirect to protected page
-      return navigateTo("/home");
+      return navigateTo("/");
     }
   },
   { immediate: true },
