@@ -10,7 +10,7 @@ const profile = reactive({
 });
 
 const user = useSupabaseUser();
-if (user.value) {
+if (user.value && profile.username == "") {
   const { data } = await supabase
     .from("profiles")
     .select("username, avatar_url")

@@ -1,6 +1,11 @@
+<script setup lang="ts"></script>
+
 <template>
   <Topbar />
   <div class="mx-auto max-w-7xl">
-    <slot></slot>
+    <Sidebar />
+    <div class="pl-80 pt-8">
+      <slot></slot>
+    </div>
   </div>
 </template>
