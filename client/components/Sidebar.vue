@@ -46,7 +46,10 @@ if (user.value) {
         inactive-icon="ph:users-three"
         >Following
       </Navlink>
-      <Navlink to="/profile" active-icon="ph:user-fill" inactive-icon="ph:user"
+      <Navlink
+        :to="`/user/${profile.username}`"
+        active-icon="ph:user-fill"
+        inactive-icon="ph:user"
         >My Profile
       </Navlink>
       <Navlink to="/settings" active-icon="ph:gear-fill" inactive-icon="ph:gear"
