@@ -5,17 +5,18 @@ const user = useSupabaseUser();
 
 const showModal = ref(false);
 const content = ref("");
-const attachmentUrl = ref("");
+const attachment = reactive({
+  file: "",
+  url: "",
+});
 
 function closeModal() {
   showModal.value = false;
-  attachmentUrl.value = "";
+  attachment.url = "";
 }
 
 function handleFileAttachment(event: any) {
-  const src = URL.createObjectURL(event.target.files[0]);
-  console.log(src);
-  attachmentUrl.value = src;
+  const files = event.target.files;
 }
 
 async function makePost() {
@@ -57,15 +58,15 @@ async function makePost() {
               class="mb-4 w-96 resize-none border-none bg-inherit text-xl outline-none"
               placeholder="What is happening?"
             />
-            <div v-if="attachmentUrl" class="max-w-96">
+            <div v-if="attachment.url" class="max-w-96">
               <button
-                @click="attachmentUrl = ''"
+                @click="attachment.url = ''"
                 class="absolute justify-end p-2"
               >
                 <Icon name="ph:x-circle" class="bg-[#0c1014] text-xl" />
               </button>
               <img
-                :src="attachmentUrl"
+                :src="attachment.url"
                 alt="attachment failed to load"
                 class="rounded-xl bg-cover"
               />
@@ -78,6 +79,7 @@ async function makePost() {
           <input
             @change="(event: any) => handleFileAttachment(event)"
             type="file"
+            accept="image/*"
             class="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
           />
           <div class="flex items-center">

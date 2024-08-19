@@ -3,30 +3,35 @@ const supabase = useSupabaseClient();
 
 definePageMeta({ layout: false });
 
+const loading = ref(false);
 const username = ref("");
 const email = ref("");
 const errorOccured = ref();
 
 async function signInWithOtp() {
-  const { error } = await supabase.auth.signInWithOtp({
+  loading.value = true;
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.signInWithOtp({
     email: email.value,
     options: {
       data: {
         username: username.value,
       },
-      emailRedirectTo: "http://localhost:3000/confirm",
     },
   });
+  console.log(user);
   errorOccured.value = error;
+  loading.value = false;
 }
 async function signInWithGoogle() {
+  loading.value = true;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: {
-      redirectTo: `http://localhost:3000/confirm`,
-    },
   });
   errorOccured.value = error;
+  loading.value = false;
 }
 </script>
 
@@ -66,7 +71,9 @@ async function signInWithGoogle() {
           @click="signInWithOtp"
           class="w-full rounded-md bg-white p-3 text-center font-bold text-black"
         >
-          <Icon name="ph:envelope-simple" class="me-2" />Sign in with OTP
+          <Icon name="ph:envelope-simple" class="me-2" />{{
+            loading ? "loading" : "sign in with magic link"
+          }}
         </button>
       </div>
       <div v-if="errorOccured" class="rounded-lg bg-red-500 p-1 text-white">

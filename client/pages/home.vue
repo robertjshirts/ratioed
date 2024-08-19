@@ -14,7 +14,6 @@ if (data) {
 </script>
 
 <template>
-  <div>{{ user }}</div>
   <div class="mb-2 flex items-center justify-between">
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">

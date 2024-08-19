@@ -1,5 +1,18 @@
 <script setup lang="ts">
-await navigateTo('/home');
+const user = useSupabaseUser();
+
+watch(
+  user,
+  () => {
+    if (user.value) {
+      // Redirect to protected page
+      return navigateTo("/");
+    }
+  },
+  { immediate: true },
+);
 </script>
 
-<template><p>(should redirect to home)</p></template>
+<template>
+  <div>Waiting for login...</div>
+</template>
