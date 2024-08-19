@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import type { Database } from "~/types";
 const supabase = useSupabaseClient<Database>();
+
+const loading = ref(false);
+const profile = reactive({
+  username: "",
+  email: "",
+  avatar_url: "",
+});
+
 const user = useSupabaseUser();
+if (user.value) {
+  const { data } = await supabase
+    .from("profiles")
+    .select("username, avatar_url")
+    .eq("id", user.value.id)
+    .single();
+  if (data) {
+    profile.username = data.username;
+    profile.avatar_url = data.avatar_url || "";
+  }
+}
 </script>
 
 <template>
   <div class="fixed top-16 box-border h-full w-60">
     <div v-if="user" class="flex flex-col border-b py-8 pl-2">
       <img
-        :src="userProfile?.avatar_url"
+        :src="profile.avatar_url"
         alt="failed to load"
         class="w-24 rounded-full"
       />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">{{ userProfile.username }}</span>
+        <span class="mt-4 text-lg">{{ profile.username }}</span>
         <span class="text-gray-400">{{ user.email }}</span>
       </div>
     </div>

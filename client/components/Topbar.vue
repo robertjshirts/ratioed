@@ -5,7 +5,9 @@ const user = useSupabaseUser();
 <template>
   <div class="/80 sticky top-0 border-b bg-inherit backdrop-blur">
     <div class="mx-auto flex max-w-7xl justify-between px-2 py-3">
-      <span class="text-3xl font-bold">ratioed</span>
+      <span @click="navigateTo('/')" class="cursor-pointer text-3xl font-bold"
+        >ratioed</span
+      >
       <div class="flex items-center">
         <button
           v-if="!user"

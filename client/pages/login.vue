@@ -10,10 +10,7 @@ const errorOccured = ref();
 
 async function signInWithOtp() {
   loading.value = true;
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.signInWithOtp({
+  const { error } = await supabase.auth.signInWithOtp({
     email: email.value,
     options: {
       data: {
@@ -22,7 +19,6 @@ async function signInWithOtp() {
       emailRedirectTo: "http://localhost:3000/confirm",
     },
   });
-  console.log(user);
   errorOccured.value = error;
   loading.value = false;
 }
