@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   ],
   supabase: {
     redirect: false,
-    types: "~/types/database.types.ts",
+    types: "~/types/database.d.ts",
   },
   googleFonts: {
     families: {

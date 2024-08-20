@@ -1,10 +1,15 @@
+<script setup lang="ts">
+const profile = useProfile();
+console.log(profile.value);
+</script>
+
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div class="flex flex-col border-b py-8 pl-2">
+    <div v-if="profile" class="flex flex-col border-b py-8 pl-2">
       <img src="" alt="failed to load" class="w-24 rounded-full" />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">username</span>
-        <span class="text-gray-400">email</span>
+        <span class="mt-4 text-lg">{{ profile.username }}</span>
+        <span class="text-gray-400">{{ profile.email }}</span>
       </div>
     </div>
     <nav class="border-b border-[#3f3f3f] py-5">
