@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Database, Tables } from "~/types";
-const supabase = useSupabaseClient<Database>();
+const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 
 const timeline = ref<any[]>([]);

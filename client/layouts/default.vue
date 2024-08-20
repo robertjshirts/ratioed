@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
   <Topbar />
   <div class="mx-auto max-w-7xl">
