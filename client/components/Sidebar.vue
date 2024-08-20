@@ -1,15 +1,10 @@
-<script setup lang="ts">
-const profile = useProfile();
-console.log(profile.value);
-</script>
-
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div v-if="profile" class="flex flex-col border-b py-8 pl-2">
-      <img src="" alt="failed to load" class="w-24 rounded-full" />
+    <div v-if="true" class="flex flex-col border-b py-8 pl-2">
+      <img src="" alt="avatar failed to load" class="w-24 rounded-full" />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">{{ profile.username }}</span>
-        <span class="text-gray-400">{{ profile.email }}</span>
+        <span class="mt-4 text-lg">username</span>
+        <span class="text-gray-400">email</span>
       </div>
     </div>
     <nav class="border-b border-[#3f3f3f] py-5">
@@ -23,7 +18,7 @@ console.log(profile.value);
         >Following
       </Navlink>
       <Navlink
-        :to="`/user/${'user'}`"
+        :to="`/user/user`"
         active-icon="ph:user-fill"
         inactive-icon="ph:user"
         >My Profile
@@ -43,7 +38,7 @@ console.log(profile.value);
         Log in
       </button>
     </div>
-    <div class="pt-8">
+    <div v-if="true" class="pt-8">
       <PostModal />
     </div>
   </div>

@@ -1,3 +1,3 @@
 <template>
-  <div>following page</div>
+  <div>feature in development</div>
 </template>
