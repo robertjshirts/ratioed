@@ -1,7 +1,3 @@
-<script setup lang="ts">
-const user = useSupabaseUser();
-</script>
-
 <template>
   <div class="/80 sticky top-0 border-b bg-inherit backdrop-blur">
     <div class="mx-auto flex max-w-7xl justify-between px-2 py-3">
@@ -10,13 +6,12 @@ const user = useSupabaseUser();
       >
       <div class="flex items-center">
         <button
-          v-if="!user"
-          @click="$router.push('/login')"
+          @click="navigateTo('/login')"
           class="rounded-md bg-white px-6 py-1 text-black transition-all hover:bg-gray-200"
         >
           Log in
         </button>
-        <div v-else></div>
+        <div></div>
         <button class="ms-4 flex">
           <Icon name="ph:dots-three-outline-vertical-fill" class="text-xl" />
         </button>
