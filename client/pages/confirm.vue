@@ -3,10 +3,10 @@ const user = useSupabaseUser();
 
 watch(
   user,
-  async () => {
-    if (!user.value) return navigateTo("/login");
-
-    return navigateTo("/");
+  () => {
+    if (user.value) {
+      return navigateTo("/");
+    }
   },
   { immediate: true },
 );

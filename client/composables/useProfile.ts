@@ -1,3 +1,7 @@
-export const useUsername = () => useState("username");
-export const useEmail = () => useState("email");
-export const useAvatarUrl = () => useState("avatarUrl");
+export default function useProfile() {
+  const username = useState("username", () => "");
+  const email = useState("email", () => "");
+  const avatarUrl = useState("avatarUrl", () => "");
+
+  return { username, email, avatarUrl };
+}
