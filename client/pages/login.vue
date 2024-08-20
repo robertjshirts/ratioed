@@ -24,7 +24,7 @@ async function signInWithOtp() {
 }
 async function signInWithGoogle() {
   loading.value = true;
-  const { error } = await supabase.auth.signInWithOAuth({
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       redirectTo: "http://localhost:3000/confirm",

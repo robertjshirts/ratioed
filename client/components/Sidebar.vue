@@ -1,10 +1,19 @@
+<script setup lang="ts">
+const profile = useProfile();
+const user = useSupabaseUser();
+</script>
+
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div v-if="true" class="flex flex-col border-b py-8 pl-2">
-      <img src="" alt="avatar failed to load" class="w-24 rounded-full" />
+    <div v-if="profile" class="flex flex-col border-b py-8 pl-2">
+      <img
+        :src="profile.avatarUrl || ''"
+        alt="avatar failed to load"
+        class="w-24 rounded-full"
+      />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">username</span>
-        <span class="text-gray-400">email</span>
+        <span class="mt-4 text-lg">{{ profile.username }}</span>
+        <span class="text-gray-400">{{ user.email }}</span>
       </div>
     </div>
     <nav class="border-b border-[#3f3f3f] py-5">
@@ -27,7 +36,10 @@
         >Settings
       </Navlink>
     </nav>
-    <div class="flex flex-col py-3 text-lg">
+    <div v-if="profile" class="pt-8">
+      <PostModal />
+    </div>
+    <div v-else class="flex flex-col py-3 text-lg">
       <span class="text-gray-300"
         >log in to follow users, ratio others, and have bad takes</span
       >
@@ -37,9 +49,6 @@
       >
         Log in
       </button>
-    </div>
-    <div v-if="true" class="pt-8">
-      <PostModal />
     </div>
   </div>
 </template>

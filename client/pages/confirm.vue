@@ -21,7 +21,6 @@ watch(
         profile.value.avatarUrl = data.avatar_url;
       }
 
-      reloadNuxtApp();
       return navigateTo("/");
     }
   },
