@@ -5,25 +5,42 @@ const user = useSupabaseUser();
 
 const showModal = ref(false);
 const content = ref("");
-const attachment = reactive({
-  file: "",
-  url: "",
-});
+const src = ref("");
+const files = ref();
 
 function closeModal() {
   showModal.value = false;
-  attachment.url = "";
+  src.value = "";
+  files.value = null;
 }
 
 function handleFileAttachment(event: any) {
-  const files = event.target.files;
+  files.value = event.target.files;
+  src.value = URL.createObjectURL(files.value[0]);
 }
 
 async function makePost() {
+  let attachmentUrl = "";
+  if (files.value) {
+    const file = files.value[0];
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+
+    console.log(`uploading ${file.name} with path of ${fileName}`);
+
+    const { data: fullPath, error } = await supabase.storage
+      .from("attachments")
+      .upload(fileName, file);
+
+    attachmentUrl = `https://hhtvcfarcfoxzylxjfij.supabase.co/storage/v1/object/public/${fullPath?.fullPath}`;
+  }
+
   const { error } = await supabase.from("posts").insert({
     profile_id: user.value.id,
     content: content.value,
+    attachment_url: attachmentUrl,
   });
+
   closeModal();
 }
 </script>
@@ -58,15 +75,12 @@ async function makePost() {
               class="mb-4 w-96 resize-none border-none bg-inherit text-xl outline-none"
               placeholder="What is happening?"
             />
-            <div v-if="attachment.url" class="max-w-96">
-              <button
-                @click="attachment.url = ''"
-                class="absolute justify-end p-2"
-              >
+            <div v-if="src" class="max-w-96">
+              <button @click="src = ''" class="absolute justify-end p-2">
                 <Icon name="ph:x-circle" class="bg-[#0c1014] text-xl" />
               </button>
               <img
-                :src="attachment.url"
+                :src="src"
                 alt="attachment failed to load"
                 class="rounded-xl bg-cover"
               />

@@ -9,9 +9,10 @@ export default function useProfile() {
 
     if (error) return;
 
+    navigateTo("/login");
+
     username.value = "";
     avatarUrl.value = "";
-    navigateTo("/login");
   }
 
   return { username, email, avatarUrl, signOut };
