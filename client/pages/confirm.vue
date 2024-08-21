@@ -16,9 +16,9 @@ watch(
         .single();
 
       if (data) {
-        const profile = useProfile();
-        profile.value.username = data.username;
-        profile.value.avatarUrl = data.avatar_url;
+        const { username, avatarUrl } = useProfile();
+        username.value = data.username;
+        avatarUrl.value = data.avatar_url || "";
       }
 
       return navigateTo("/");
