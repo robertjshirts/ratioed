@@ -1,14 +1,6 @@
 <script setup lang="ts">
-defineProps<{
-  post_id: string;
-  content: string;
-  attachment_url: string;
-  user_id: string;
-  username: string;
-  avatar_url: string;
-  likes: number;
-  dislikes: number;
-}>();
+import type { Database } from "~/types/database";
+defineProps<Database["public"]["Views"]["parent_posts_view"]["Row"]>();
 </script>
 
 <template>

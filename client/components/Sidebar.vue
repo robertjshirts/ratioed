@@ -1,18 +1,29 @@
 <script setup lang="ts">
-const { username, avatarUrl, signOut } = useProfile();
 const user = useSupabaseUser();
+const { signOut } = useProfile();
+
+const { data } = await useAsyncData("profile", async () => {
+  const supabase = useSupabaseClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select(`username, avatar_url`)
+    .eq("id", user.value.id)
+    .single();
+
+  return data;
+});
 </script>
 
 <template>
   <div class="fixed top-16 box-border h-full w-60">
-    <div v-if="username" class="flex flex-col border-b py-8 pl-2">
+    <div v-if="user" class="flex flex-col border-b py-8 pl-2">
       <img
-        :src="avatarUrl"
+        :src="data?.avatar_url"
         alt="avatar failed to load"
         class="w-24 rounded-full"
       />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">{{ username }}</span>
+        <span class="mt-4 text-lg">{{ data?.username }}</span>
         <span class="text-gray-400">{{ user.email }}</span>
       </div>
     </div>
@@ -30,7 +41,7 @@ const user = useSupabaseUser();
         >Settings
       </Navlink>
       <button
-        v-if="username"
+        v-if="user"
         @click="signOut"
         class="flex w-full items-center rounded-lg p-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
       >
@@ -38,7 +49,7 @@ const user = useSupabaseUser();
         Log out
       </button>
     </nav>
-    <div v-if="username" class="pt-8">
+    <div v-if="user" class="pt-8">
       <PostModal />
     </div>
     <div v-else class="flex flex-col py-3 text-lg">

@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
 const supabase = useSupabaseClient<Database>();
-const user = useSupabaseUser();
 
-const timeline = ref();
-
-const { data, refresh: refreshTimeline } = await useAsyncData(
-  "timeline",
-  async () => {
-    const { data } = await supabase.from("parent_posts_view").select(`*`);
-    return data;
-  },
-);
-timeline.value = data.value;
+const { data: timeline } = await useAsyncData("timeline", async () => {
+  const { data } = await supabase
+    .from("parent_posts_view")
+    .select(`*`)
+    .order("created_at", { ascending: false });
+  return data;
+});
 </script>
 
 <template>

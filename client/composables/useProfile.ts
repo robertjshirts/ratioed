@@ -1,7 +1,7 @@
 export default function useProfile() {
-  const username = useState<string>("username", () => "");
-  const email = useState<string>("email", () => "");
-  const avatarUrl = useState<string>("avatarUrl", () => "");
+  const username = useCookie<string>("username");
+  const email = useCookie<string>("email");
+  const avatarUrl = useCookie<string>("avatarUrl");
 
   async function signOut() {
     const supabase = useSupabaseClient();
