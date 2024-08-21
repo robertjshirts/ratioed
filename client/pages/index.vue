@@ -1,13 +1,18 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
+import type { Database } from "~/types/database";
+const supabase = useSupabaseClient<Database>();
 const user = useSupabaseUser();
 
-const timeline = ref<any[]>([]);
+const timeline = ref();
 
-// const { data, error } = await supabase
-//   .from("posts")
-//   .select(`*, profiles:profile_id (*)`);
-// if (data) timeline.value = data;
+const { data, refresh: refreshTimeline } = await useAsyncData(
+  "timeline",
+  async () => {
+    const { data } = await supabase.from("parent_posts_view").select(`*`);
+    return data;
+  },
+);
+timeline.value = data.value;
 </script>
 
 <template>
@@ -32,6 +37,5 @@ const timeline = ref<any[]>([]);
       </NuxtLink>
     </div>
   </div>
-  <div>{{ user }}</div>
   <Post v-for="post in timeline" v-bind="post" />
 </template>

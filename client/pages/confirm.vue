@@ -22,7 +22,7 @@ watch(
         email.value = user.value.email || "";
         avatarUrl.value = data.avatar_url || "";
       }
-      navigateTo("/");
+      router.push("/");
     }
   },
   { immediate: true },
