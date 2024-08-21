@@ -11,7 +11,7 @@ export default function useProfile() {
 
     username.value = "";
     avatarUrl.value = "";
-    reloadNuxtApp();
+    navigateTo("/login");
   }
 
   return { username, email, avatarUrl, signOut };

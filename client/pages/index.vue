@@ -2,13 +2,16 @@
 import type { Database } from "~/types/database";
 const supabase = useSupabaseClient<Database>();
 
-const { data: timeline } = await useLazyAsyncData("timeline", async () => {
-  const { data } = await supabase
-    .from("parent_posts_view")
-    .select(`*`)
-    .order("created_at", { ascending: false });
-  return data;
-});
+const { data: timeline, status } = await useLazyAsyncData(
+  "timeline",
+  async () => {
+    const { data } = await supabase
+      .from("parent_posts_view")
+      .select(`*`)
+      .order("created_at", { ascending: false });
+    return data;
+  },
+);
 </script>
 
 <template>
@@ -33,5 +36,6 @@ const { data: timeline } = await useLazyAsyncData("timeline", async () => {
       </NuxtLink>
     </div>
   </div>
+
   <Post v-for="post in timeline" v-bind="post" />
 </template>
