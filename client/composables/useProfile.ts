@@ -1,5 +1,6 @@
 export default function useProfile() {
   const username = useState<string>("username", () => "");
+  const email = useState<string>("email", () => "");
   const avatarUrl = useState<string>("avatarUrl", () => "");
 
   async function signOut() {
@@ -13,5 +14,5 @@ export default function useProfile() {
     reloadNuxtApp();
   }
 
-  return { username, avatarUrl, signOut };
+  return { username, email, avatarUrl, signOut };
 }

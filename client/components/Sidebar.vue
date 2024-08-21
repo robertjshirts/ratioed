@@ -30,6 +30,7 @@ const user = useSupabaseUser();
         >Settings
       </Navlink>
       <button
+        v-if="username"
         @click="signOut"
         class="flex w-full items-center rounded-lg p-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
       >

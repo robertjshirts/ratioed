@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import type { Database } from "~/types/database";
-
+const router = useRouter();
 const user = useSupabaseUser();
+
+setTimeout(() => router.push("/login"), 5000);
 
 watch(
   user,
   async () => {
     if (user.value) {
-      const supabase = useSupabaseClient<Database>();
+      const supabase = useSupabaseClient();
 
       const { data } = await supabase
         .from("profiles")
@@ -16,12 +17,12 @@ watch(
         .single();
 
       if (data) {
-        const { username, avatarUrl } = useProfile();
+        const { username, email, avatarUrl } = useProfile();
         username.value = data.username;
+        email.value = user.value.email || "";
         avatarUrl.value = data.avatar_url || "";
       }
-
-      return navigateTo("/");
+      navigateTo("/");
     }
   },
   { immediate: true },
