@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: Ratioed Posts API
+  version: 1.0.0
+paths:
+  /posts:
+    get:
+      summary: Get all posts
+      operationId: GetPosts
+      parameters:
+        - name: username
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter posts by author's username. Case sensitive (for now, hope to change soon).
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter posts by hashtag
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort posts by date (default desc)
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: The page number to retreive (1-based index)
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: The number of posts per page (max 100)
+      responses:
+        '200':
+          description: A list of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
+    post:
+      summary: Create a new post
+      operationId: CreatePost
+      requestBody:
+        $ref: '#/components/requestBodies/NewPost'
+      responses:
+        '201':
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+
+  /posts/{postId}:
+    get:
+      summary: Get a specific post by Id
+      operationId: GetPostById
+      parameters:
+        - $ref: '#/components/parameters/PostIdParam'
+      responses:
+        '200':
+          description: The post with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posts'
+        '404':
+          description: Post not found
+
+    delete:
+      summary: Delete a post by ID
+      operationId: DeletePostById
+      parameters:
+        - $ref: '#/components/parameters/PostIdParam'
+      responses:
+        '204':
+          description: Post deleted successfully
+        '404':
+          description: Post not found
+  /posts/{postId}/comments:
+    get:
+      summary: Get all comments for a specific post
+      operationId: GetPostCommentsById
+      parameters:
+        - $ref: '#/components/parameters/PostIdParam'
+      responses:
+        '200':
+          description: The comments for the post with the given ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Posts'
+        '404':
+          description: Post not found
+
+components:
+  parameters:
+    PostIdParam:
+      name: postId
+      in: path
+      description: The id of the post to perform an operation on
+      required: true
+      schema:
+        type: string
+
+  requestBodies:
+    NewPost:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+                description: Author's username
+              parent_id:
+                type: string
+                description: Id of the parent post, if applicable (for comments)
+              content:
+                $ref: '#/components/schemas/Content'
+                description: The content of a post
+            required:
+              - username
+              - content
+            x-oapi-codegen-extra-tags:
+              db: "parent_id"
+  schemas:
+    Content:
+      type: object
+      properties:
+        body:
+          type: string
+          description: The body of the post. Required, but c
+          x-oapi-codegen-extra-tags:
+            db: "body"
+        attachments:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Attachment'
+          description: The URLs of the post's attachments
+      required:
+        - body
+    Attachment:
+      type: object
+      properties: 
+        type:
+          type: string
+          description: The type of attachment
+          enum:
+            - image
+            - video
+        src:
+          type: string
+          description: The URL source for the attachment
+      required:
+        - type
+        - src
+    Post:
+      type: object
+      properties: 
+        id:
+          type: string
+          description: the id of the post
+        parent_id:
+          type: string
+          description: the id of the parent of the post (if this field is not null, then the post is a comment)
+          x-oapi-codegen-extra-tags:
+            db: parent_id
+        username:
+          type: string
+          description: Author's username
+        pfp:
+          type: string
+          description: Author's pfp
+        content:
+           $ref: '#/components/schemas/Content'
+        ratioed:
+          type: boolean
+          description: If this is true, the post should be displayed as a ratioed post (with no content, and locked with no more likes or dislikes)
+        likes:
+          type: integer
+          minimum: 0
+        dislikes:
+          type: integer
+          minimum: 0
+        timestamp:
+          type: string
+          format: date-time
+          description: A ISO8601 string that repreesents the exact time that the post was created (time is according to database)
+      required:
+        - id
+        - username
+        - pfp
+        - content
+        - ratioed
+        - likes
+        - dislikes
+        - timestamp
+    Posts:
+      description: An array of posts
+      type: array
+      items:
+        $ref: '#/components/schemas/Post'
+
+
+
+
+

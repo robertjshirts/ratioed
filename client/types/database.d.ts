@@ -158,11 +158,26 @@ export type Database = {
           created_at: string | null
           dislikes: number | null
           likes: number | null
+          parent_id: string | null
           post_id: string | null
           user_id: string | null
           username: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "parent_posts_view"
+            referencedColumns: ["post_id"]
+          },
           {
             foreignKeyName: "profiles_id_fkey"
             columns: ["user_id"]

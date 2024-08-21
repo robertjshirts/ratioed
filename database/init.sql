@@ -1,9 +1,15 @@
+-- Drop tables if they already exist
+DROP TABLE IF EXISTS account CASCADE;
+DROP TABLE IF EXISTS attachment CASCADE;
+DROP TABLE IF EXISTS hashtag CASCADE;
+DROP TABLE IF EXISTS post CASCADE;
+DROP TABLE IF EXISTS reaction CASCADE;
+
 -- Create Account table
 CREATE TABLE account (
-    id SERIAL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid (),
     email VARCHAR(100) NOT NULL UNIQUE,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
     bio TEXT NOT NULL DEFAULT '',
     pfp VARCHAR(255)
 );
@@ -12,12 +18,12 @@ CREATE TABLE account (
 -- Considered a Comment if parent_post_id is not null
 -- ratioed column locks the post when it has been ratioed
 CREATE TABLE post (
-    id SERIAL PRIMARY KEY,
-    parent_id INT,
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid (),
+    parent_id uuid,
     body TEXT NOT NULL,
-    account_id INT NOT NULL,
+    account_id uuid NOT NULL,
     ratioed BOOLEAN NOT NULL DEFAULT FALSE,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE,
     FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
 );
@@ -25,8 +31,8 @@ CREATE TABLE post (
 -- Create Attachment table
 -- id only exists to differentiate here, no foreign keys link to it
 CREATE TABLE attachment (
-    id SERIAL PRIMARY KEY,
-    parent_id INT NOT NULL,
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid (),
+    parent_id uuid NOT NULL,
     src VARCHAR(255) NOT NULL,
     type VARCHAR(10) NOT NULL CHECK (type  IN ('image', 'video')),
     FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE
@@ -35,7 +41,7 @@ CREATE TABLE attachment (
 -- Create Hashtag table
 -- Composite key because hashtags should be unique on any post
 CREATE TABLE hashtag (
-    parent_id INT NOT NULL,
+    parent_id uuid NOT NULL,
     tag VARCHAR(50) NOT NULL,
     PRIMARY KEY (parent_id, tag),
     FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE
@@ -45,8 +51,8 @@ CREATE TABLE hashtag (
 -- Composite key because there should only be one reaction per post
 CREATE TABLE reaction (
     reaction_type VARCHAR(10) NOT NULL CHECK (reaction_type IN ('like', 'dislike')),
-    parent_id INT NOT NULL,
-    account_id INT NOT NULL,
+    parent_id uuid NOT NULL,
+    account_id uuid NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (parent_id, account_id),
     FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE,
