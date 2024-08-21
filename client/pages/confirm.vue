@@ -2,8 +2,6 @@
 const router = useRouter();
 const user = useSupabaseUser();
 
-setTimeout(() => router.push("/login"), 5000);
-
 watch(
   user,
   async () => {
