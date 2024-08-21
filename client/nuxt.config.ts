@@ -17,4 +17,9 @@ export default defineNuxtConfig({
       Outfit: true,
     },
   },
+  icon: {
+    clientBundle: {
+      icons: ["ph:house-fill", "ph:user-fill", "ph:gear-fill"],
+    },
+  },
 });

@@ -2,7 +2,7 @@
 import type { Database } from "~/types/database";
 const supabase = useSupabaseClient<Database>();
 
-const { data: timeline } = await useAsyncData("timeline", async () => {
+const { data: timeline } = await useLazyAsyncData("timeline", async () => {
   const { data } = await supabase
     .from("parent_posts_view")
     .select(`*`)
