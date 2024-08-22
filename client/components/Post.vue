@@ -4,7 +4,7 @@ defineProps<Database["public"]["Views"]["parent_posts_view"]["Row"]>();
 </script>
 
 <template>
-  <div class="my-4 flex flex-1 rounded-lg border px-5 py-3">
+  <div class="my-4 flex flex-1 rounded-lg border p-4">
     <div class="mt-1">
       <img
         :src="avatar_url ?? undefined"
@@ -17,6 +17,7 @@ defineProps<Database["public"]["Views"]["parent_posts_view"]["Row"]>();
       <span class="mt-1 text-gray-300">{{ content }}</span>
       <NuxtImg
         preload
+        placeholder
         v-if="attachment_url"
         :src="attachment_url"
         alt="image failed to load"

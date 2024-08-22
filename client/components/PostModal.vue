@@ -9,9 +9,10 @@ const src = ref("");
 const files = ref();
 
 function closeModal() {
-  showModal.value = false;
+  content.value = "";
   src.value = "";
   files.value = null;
+  showModal.value = false;
 }
 
 function handleFileAttachment(event: any) {
