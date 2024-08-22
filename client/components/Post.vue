@@ -5,7 +5,8 @@ defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
 
 <template>
   <div
-    class="my-4 flex flex-1 rounded-lg border bg-[#131313] p-4 pe-8 hover:bg-[#141414]"
+    @click="navigateTo(`/user/${user_id}/posts/${post_id}`)"
+    class="my-4 flex flex-1 cursor-pointer rounded-lg border bg-[#131313] p-4 pe-8 transition-all hover:bg-[#141414]"
   >
     <div class="mt-1">
       <img
@@ -15,7 +16,11 @@ defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
       />
     </div>
     <div class="ms-3 flex flex-1 flex-col">
-      <span class="text-lg font-bold hover:underline">{{ username }}</span>
+      <span
+        @click="navigateTo(`/user/${user_id}`)"
+        class="cursor-pointer text-lg font-bold hover:underline"
+        >{{ username }}</span
+      >
       <span class="mt-1 text-gray-300">{{ content }}</span>
       <NuxtImg
         preload
@@ -23,7 +28,7 @@ defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
         v-if="attachment_url"
         :src="attachment_url"
         alt="image failed to load"
-        class="mt-4 rounded-lg bg-contain"
+        class="mt-4 cursor-auto rounded-lg bg-contain"
       />
       <div class="mt-4 flex text-gray-400">
         <button class="flex items-center">
