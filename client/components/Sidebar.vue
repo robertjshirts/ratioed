@@ -17,17 +17,13 @@ const { data } = await useAsyncData("profile", async () => {
 <template>
   <div class="fixed top-16 box-border h-full w-60">
     <div v-if="user" class="flex flex-col border-b py-8 pl-2">
-      <img
-        :src="data?.avatar_url"
-        alt="avatar failed to load"
-        class="w-24 rounded-full"
-      />
+      <img :src="data?.avatar_url" class="w-24 rounded-full" />
       <div class="flex flex-col">
         <span class="mt-4 text-lg">{{ data?.username }}</span>
         <span class="text-gray-400">{{ user.email }}</span>
       </div>
     </div>
-    <nav class="border-b border-[#3f3f3f] py-5">
+    <nav class="border-b py-5">
       <Navlink to="/" active-icon="ph:house-fill" inactive-icon="ph:house"
         >Home
       </Navlink>

@@ -4,7 +4,7 @@ defineProps<Database["public"]["Views"]["parent_posts_view"]["Row"]>();
 </script>
 
 <template>
-  <div class="flex border-t py-3">
+  <div class="my-4 flex flex-1 rounded-lg border px-5 py-3">
     <div class="mt-1">
       <img
         :src="avatar_url ?? undefined"
@@ -12,14 +12,15 @@ defineProps<Database["public"]["Views"]["parent_posts_view"]["Row"]>();
         class="min-w-12 max-w-12 rounded-full"
       />
     </div>
-    <div class="ms-3 flex flex-col">
+    <div class="ms-3 flex flex-1 flex-col">
       <span class="text-lg font-bold hover:underline">{{ username }}</span>
-      <span class="mt-1">{{ content }}</span>
-      <img
+      <span class="mt-1 text-gray-300">{{ content }}</span>
+      <NuxtImg
+        preload
         v-if="attachment_url"
         :src="attachment_url"
-        alt=""
-        class="mt-4 w-64 rounded-lg bg-contain"
+        alt="image failed to load"
+        class="mt-4 rounded-lg bg-contain"
       />
     </div>
   </div>

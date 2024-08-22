@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxtjs/google-fonts",
     "@nuxtjs/supabase",
+    "@nuxt/image",
   ],
   supabase: {
     redirect: false,
@@ -28,5 +29,8 @@ export default defineNuxtConfig({
         "ph:gear-fill",
       ],
     },
+  },
+  nitro: {
+    preset: "aws-lambda",
   },
 });

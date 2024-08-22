@@ -36,7 +36,8 @@ const { data: timeline, status } = await useLazyAsyncData(
       </NuxtLink>
     </div>
   </div>
-  <div>
+  <div v-if="status === 'success'">
     <Post v-for="post in timeline" v-bind="post" />
   </div>
+  <div v-else>loading posts...</div>
 </template>
