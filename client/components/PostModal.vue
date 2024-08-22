@@ -55,9 +55,9 @@ async function makePost() {
   </button>
   <div
     v-if="showModal"
-    class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-[#0f0f0f]/80 bg-black bg-opacity-10 backdrop-blur"
+    class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-[#0f0f0f] bg-opacity-90 backdrop-blur"
   >
-    <div class="flex flex-col rounded-lg border bg-[#181818] p-3 text-white">
+    <div class="flex flex-col rounded-lg border bg-[#131313] p-3 text-white">
       <Icon
         @click="closeModal"
         name="ph:x-circle"
