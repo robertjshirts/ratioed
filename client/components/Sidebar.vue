@@ -15,7 +15,7 @@ const { data } = await useAsyncData("profile", async () => {
 </script>
 
 <template>
-  <div class="fixed top-16 box-border h-full w-60">
+  <div class="fixed top-16 z-50 box-border h-full w-60">
     <div v-if="user" class="flex flex-col border-b py-8 pl-2">
       <img :src="data?.avatar_url" class="w-24 rounded-full" />
       <div class="flex flex-col">
