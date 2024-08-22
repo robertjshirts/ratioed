@@ -8,7 +8,7 @@ const { data: timeline, status } = await useLazyAsyncData(
     const { data } = await supabase
       .from("posts_view")
       .select(`*`)
-      .is('parent_id', null)
+      .is("parent_id", null)
       .order("created_at", { ascending: false });
     return data;
   },
@@ -39,6 +39,7 @@ const { data: timeline, status } = await useLazyAsyncData(
           </NuxtLink>
         </div>
       </div>
+      <div>{{ timeline }}</div>
       <div v-if="status === 'success'">
         <Post v-for="post in timeline" v-bind="post" />
       </div>
