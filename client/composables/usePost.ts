@@ -2,7 +2,7 @@ import type { Database } from "~/types/database";
 import { ref } from "vue";
 
 export async function usePost(post_id: string) {
-    type ParentPostsView = Database["public"]["Views"]["parent_posts_view"];
+    type ParentPostsView = Database["public"]["Views"]["posts_view"];
     type Post = ParentPostsView["Row"];
 
     const supabase = useSupabaseClient<Database>();
@@ -14,7 +14,7 @@ export async function usePost(post_id: string) {
     const fetchPost = async () => {
         try {
             const { data, error: fetchError } = await supabase
-                .from("parent_posts_view")
+                .from("posts_view")
                 .select("*")
                 .eq("post_id", post_id)
                 .single();

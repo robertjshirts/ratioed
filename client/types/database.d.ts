@@ -39,21 +39,21 @@ export type Database = {
             foreignKeyName: "posts_parent_id_fkey"
             columns: ["parent_id"]
             isOneToOne: false
-            referencedRelation: "parent_posts_view"
-            referencedColumns: ["post_id"]
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "posts_parent_id_fkey"
             columns: ["parent_id"]
             isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
+            referencedRelation: "posts_view"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "posts_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
-            referencedRelation: "parent_posts_view"
+            referencedRelation: "posts_view"
             referencedColumns: ["user_id"]
           },
           {
@@ -121,21 +121,21 @@ export type Database = {
             foreignKeyName: "reactions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
-            referencedRelation: "parent_posts_view"
-            referencedColumns: ["post_id"]
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "reactions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
+            referencedRelation: "posts_view"
+            referencedColumns: ["post_id"]
           },
           {
             foreignKeyName: "reactions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "parent_posts_view"
+            referencedRelation: "posts_view"
             referencedColumns: ["user_id"]
           },
           {
@@ -149,7 +149,7 @@ export type Database = {
       }
     }
     Views: {
-      parent_posts_view: {
+      posts_view: {
         Row: {
           attachment_url: string | null
           avatar_url: string | null
@@ -175,7 +175,7 @@ export type Database = {
             foreignKeyName: "posts_parent_id_fkey"
             columns: ["parent_id"]
             isOneToOne: false
-            referencedRelation: "parent_posts_view"
+            referencedRelation: "posts_view"
             referencedColumns: ["post_id"]
           },
           {

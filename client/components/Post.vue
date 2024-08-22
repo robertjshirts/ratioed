@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
-defineProps<Database["public"]["Views"]["parent_posts_view"]["Row"]>();
+defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
 </script>
 
 <template>

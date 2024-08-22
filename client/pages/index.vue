@@ -6,8 +6,9 @@ const { data: timeline, status } = await useLazyAsyncData(
   "timeline",
   async () => {
     const { data } = await supabase
-      .from("parent_posts_view")
+      .from("posts_view")
       .select(`*`)
+      .is('parent_id', null)
       .order("created_at", { ascending: false });
     return data;
   },

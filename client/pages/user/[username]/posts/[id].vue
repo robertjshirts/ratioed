@@ -10,7 +10,7 @@ const post_id = route.params.id as string;
 
 const { post, error, loading } = await usePost(post_id);
 
-type ParentPostsView = Database["public"]["Views"]["parent_posts_view"];
+type ParentPostsView = Database["public"]["Views"]["posts_view"];
 type Post = ParentPostsView["Row"];
 
 const comments = ref<Post[]>([]);
@@ -19,7 +19,7 @@ const commentsError = ref<string | null>(null);
 watch(post, async (postValue) => {
   if (postValue) {
     const { data, error } = await supabase
-      .from("parent_posts_view")
+      .from("posts_view")
       .select()
       .eq("parent_id", post_id);
     if (error) {
