@@ -16,6 +16,11 @@ defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
       />
     </div>
     <div class="ms-3 flex flex-1 flex-col">
+      <div v-if="parent_id" class="mt-1 text-sm text-gray-400 hover:underline">
+        <span @click.stop="navigateTo(`/user/${user_id}/posts/${parent_id}`)">
+          Replying to Parent Post
+        </span>
+      </div>
       <span
         @click="navigateTo(`/user/${user_id}`)"
         class="cursor-pointer text-lg font-bold hover:underline"

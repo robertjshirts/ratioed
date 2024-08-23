@@ -3,85 +3,61 @@ import { useRoute } from "vue-router";
 import { usePost } from "~/composables/usePost";
 import type { Database } from "~/types/database";
 
-const supabase = useSupabaseClient();
+const supabase = useSupabaseClient<Database>();
 
 const route = useRoute();
 const post_id = route.params.id as string;
 
-const { post, error, loading } = await usePost(post_id);
+// const { post, error, loading } = await usePost(post_id);
 
-type ParentPostsView = Database["public"]["Views"]["posts_view"];
-type Post = ParentPostsView["Row"];
 
-const comments = ref<Post[]>([]);
-const commentsError = ref<string | null>(null);
+const { data: post, status } = await useLazyAsyncData(
+  `post:${post_id}`,
+  async () => {
+    const { data } = await supabase
+      .from("posts_view")
+      .select('*')
+      .eq("post_id", post_id)
+      .single();
+    return data;
+  },
+);
 
-watch(post, async (postValue) => {
-  if (postValue) {
-    const { data, error } = await supabase
+const { data: comments, refresh } = await useLazyAsyncData(
+  `comments:${post_id}`,
+  async () => {
+    const { data } = await supabase
       .from("posts_view")
       .select()
-      .eq("parent_id", post_id);
-    if (error) {
-      console.error(error);
-      commentsError.value = error.message;
-    }
-    if (data) {
-      comments.value = data;
-    }
-  }
-});
+      .eq("parent_id", post_id)
+      .order("created_at", { ascending: false });
+    return data;
+  },
+);
 </script>
 
 <template>
   <div class="mx-auto py-4">
-    <div v-if="loading" class="py-4 text-center">
+    <div v-if="status !== 'success'" class="py-4 text-center">
       <p>Loading post...</p>
     </div>
 
-    <div v-else-if="error" class="py-4 text-center text-red-500">
-      <p>Error: {{ error }}</p>
-    </div>
-
     <div v-else-if="post">
-      <PostComponent
-        :profile_id="post.user_id"
-        :profiles="{
-          username: post.username,
-          avatar_url: post.avatar_url,
-        }"
-        :content="post.content"
-        :attachment_url="post.attachment_url"
-      />
+
+      <Post v-bind="post" />
 
       <!-- Comments Section -->
       <div class="mt-4">
         <h2 class="text-lg font-bold">Comments</h2>
-        <div v-if="commentsError" class="text-red-500">
-          <p>Error loading comments: {{ commentsError }}</p>
-        </div>
-        <div v-else-if="comments.length === 0">
-          <p>No comments yet.</p>
+        <ReplyBox :postId="post_id" @reply="refresh()" />
+        <div 
+        v-if="comments === null || comments.length === 0"
+        class="py-4 text-center"
+        >
+          <p>No comments yet. Be the first!</p>
         </div>
         <div v-else>
-          <ul>
-            <li
-              v-for="comment in comments"
-              :key="comment.post_id ?? undefined"
-              class="mt-2"
-            >
-              <CommentComponent
-                :profile_id="comment.user_id"
-                :profiles="{
-                  username: comment.username,
-                  avatar_url: comment.avatar_url,
-                }"
-                :content="comment.content"
-                :attachment_url="comment.attachment_url"
-                :parent_id="comment.parent_id"
-              />
-            </li>
-          </ul>
+          <Comment v-for="comment in comments" v-bind="comment" />
         </div>
       </div>
     </div>
