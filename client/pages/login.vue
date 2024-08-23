@@ -16,7 +16,7 @@ async function signInWithOtp() {
       data: {
         username: username.value,
       },
-      emailRedirectTo: "http://localhost:3000/confirm",
+      emailRedirectTo: "http://ratioed.robertshirts.com/confirm",
     },
   });
   errorOccured.value = error;
@@ -27,7 +27,7 @@ async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "http://localhost:3000/confirm",
+      redirectTo: "http://ratioed.robertshirts.com/confirm",
     },
   });
   errorOccured.value = error;
