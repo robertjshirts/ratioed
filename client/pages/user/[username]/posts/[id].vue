@@ -8,9 +8,10 @@ const supabase = useSupabaseClient<Database>();
 const route = useRoute();
 const post_id = route.params.id as string;
 
-// const { post, error, loading } = await usePost(post_id);
+// Define enum for types of sort (e.g. "newest", "oldest", "popular")
+const sort = ref<"newest" | "oldest" | "popular">("newest");
 
-
+// Fetch the post
 const { data: post, status } = await useLazyAsyncData(
   `post:${post_id}`,
   async () => {
@@ -23,17 +24,36 @@ const { data: post, status } = await useLazyAsyncData(
   },
 );
 
+// Fetch the comments
 const { data: comments, refresh } = await useLazyAsyncData(
   `comments:${post_id}`,
   async () => {
-    const { data } = await supabase
+    let query = supabase
       .from("posts_view")
       .select()
       .eq("parent_id", post_id)
-      .order("created_at", { ascending: false });
+
+    switch (sort.value) {
+      case "newest":
+        query = query.order("created_at", { ascending: false });
+        break;
+      case "oldest":
+        query = query.order("created_at", { ascending: true });
+        break;
+      case "popular":
+        query = query.order("likes", { ascending: false });
+        break;
+    }
+
+    const { data } = await query;
+    
     return data;
   },
 );
+
+watch(sort, () => {
+  refresh();
+});
 </script>
 
 <template>
@@ -48,7 +68,15 @@ const { data: comments, refresh } = await useLazyAsyncData(
 
       <!-- Comments Section -->
       <div class="mt-4">
-        <h2 class="text-lg font-bold">Comments</h2>
+        <div class="flex">
+          <h2 class="text-lg font-bold">Comments</h2>
+          <!-- Sort dropdown -->
+          <select v-model="sort" class="ms-auto rounded-full p-2 bg-[#131313] text-white">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="popular">Most Popular</option>
+          </select>
+        </div>
         <ReplyBox :postId="post_id" @reply="refresh()" />
         <div 
         v-if="comments === null || comments.length === 0"
