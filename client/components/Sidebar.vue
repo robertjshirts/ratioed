@@ -1,26 +1,14 @@
 <script setup lang="ts">
-const user = useSupabaseUser();
-const { signOut } = useProfile();
-
-const { data } = await useAsyncData("profile", async () => {
-  const supabase = useSupabaseClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select(`username, avatar_url`)
-    .eq("id", user.value.id)
-    .single();
-
-  return data;
-});
+const profile = useProfileStore();
 </script>
 
 <template>
   <div class="fixed top-16 z-50 box-border h-full w-60">
-    <div v-if="user" class="flex flex-col border-b py-8 pl-2">
-      <img :src="data?.avatar_url" class="w-24 rounded-full" />
+    <div v-if="profile.username" class="flex flex-col border-b py-8 pl-2">
+      <img :src="profile.avatarUrl || ''" class="w-24 rounded-full" />
       <div class="flex flex-col">
-        <span class="mt-4 text-lg">{{ data?.username }}</span>
-        <span class="text-gray-400">{{ user.email }}</span>
+        <span class="mt-4 text-lg">{{ profile.username }}</span>
+        <span class="text-gray-400">{{ profile.email }}</span>
       </div>
     </div>
     <nav class="border-b py-5">
@@ -28,7 +16,7 @@ const { data } = await useAsyncData("profile", async () => {
         >Home
       </Navlink>
       <Navlink
-        :to="`/user/user`"
+        :to="profile.username ? `/user/${profile.id}` : `/login`"
         active-icon="ph:user-fill"
         inactive-icon="ph:user"
         >My Profile
@@ -37,15 +25,15 @@ const { data } = await useAsyncData("profile", async () => {
         >Settings
       </Navlink>
       <button
-        v-if="user"
-        @click="signOut"
+        v-if="profile.username"
+        @click="profile.signOut"
         class="flex w-full items-center rounded-lg p-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
       >
         <Icon name="ph:arrow-fat-line-left" class="me-4" />
         Log out
       </button>
     </nav>
-    <div v-if="user" class="pt-8">
+    <div v-if="profile.username" class="pt-8">
       <PostModal />
     </div>
     <div v-else class="flex flex-col py-3 text-lg">

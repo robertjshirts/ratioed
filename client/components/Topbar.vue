@@ -1,17 +1,5 @@
 <script setup lang="ts">
-const user = useSupabaseUser();
-const { signOut } = useProfile();
-
-const { data } = await useAsyncData("profile", async () => {
-  const supabase = useSupabaseClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select(`username, avatar_url`)
-    .eq("id", user.value.id)
-    .single();
-
-  return data;
-});
+const profile = useProfileStore();
 </script>
 
 <template>
@@ -21,9 +9,13 @@ const { data } = await useAsyncData("profile", async () => {
         >ratioed</span
       >
       <div class="flex items-center">
-        <div v-if="user" class="flex items-center">
-          <img :src="data?.avatar_url" alt="" class="me-2 w-8" />
-          <span>{{ data?.username }}</span>
+        <div v-if="profile.username" class="flex items-center">
+          <img
+            :src="profile.avatarUrl || ''"
+            alt=""
+            class="me-2 w-8 rounded-full"
+          />
+          <span>{{ profile.username }}</span>
           <button class="ms-4 flex">
             <Icon name="ph:dots-three-outline-vertical-fill" class="text-xl" />
           </button>

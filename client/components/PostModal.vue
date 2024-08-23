@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
 const supabase = useSupabaseClient<Database>();
-const user = useSupabaseUser();
+const profile = useProfileStore();
 
 const showModal = ref(false);
 const content = ref("");
@@ -37,7 +37,7 @@ async function makePost() {
   }
 
   const { error } = await supabase.from("posts").insert({
-    profile_id: user.value.id,
+    profile_id: profile.id,
     content: content.value,
     attachment_url: attachmentUrl,
   });
@@ -66,7 +66,7 @@ async function makePost() {
       <div class="mt-8 flex border-b px-3">
         <div class="mb-8 flex">
           <img
-            :src="user.user_metadata.avatar_url"
+            :src="profile.avatarUrl || ''"
             class="h-12 w-12 rounded-full"
             alt="pfp failed to load"
           />

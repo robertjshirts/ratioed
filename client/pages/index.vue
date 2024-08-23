@@ -42,7 +42,6 @@ const { data: timeline, status } = await useLazyAsyncData(
       <div v-if="status === 'success'">
         <Post v-for="post in timeline" v-bind="post" />
       </div>
-      <div v-else>loading posts...</div>
     </div>
     <div class="ms-12 w-60"></div>
   </div>

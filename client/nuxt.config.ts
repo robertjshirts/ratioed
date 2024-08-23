@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
   compatibilityDate: "2024-08-07",
   modules: [
     "@nuxtjs/tailwindcss",
@@ -8,6 +14,7 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@nuxtjs/supabase",
     "@nuxt/image",
+    "@pinia/nuxt",
   ],
   supabase: {
     redirect: false,
@@ -30,7 +37,7 @@ export default defineNuxtConfig({
       ],
     },
   },
-  nitro: {
-    preset: "aws-lambda",
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
   },
 });
