@@ -16,7 +16,7 @@ const { data: timeline, status } = await useLazyAsyncData(
 </script>
 
 <template>
-  <div class="container mb-2 flex items-end justify-between">
+  <div class="mb-2 flex items-end justify-between">
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">
       <NuxtLink

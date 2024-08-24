@@ -5,7 +5,7 @@ const showModal = useState("showModal", () => false);
 
 <template>
   <div
-    class="fixed top-16 z-50 h-full -translate-x-full transition-transform sm:translate-x-0"
+    class="fixed z-50 h-full -translate-x-full transition-transform sm:translate-x-0"
   >
     <div v-if="profile.username" class="flex flex-col border-b py-8 pl-2">
       <img :src="profile.avatarUrl || ''" class="w-24 rounded-full" />

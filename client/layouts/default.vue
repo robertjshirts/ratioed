@@ -1,10 +1,8 @@
 <template>
   <Topbar />
-  <div class="mx-4 max-w-6xl lg:mx-auto">
+  <div class="relative">
     <Sidebar />
-    <div class="pt-8">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
   <PostModal />
 </template>
