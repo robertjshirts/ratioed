@@ -3,8 +3,8 @@ const profile = useProfileStore();
 </script>
 
 <template>
-  <div class="/80 sticky top-0 z-50 border-b bg-inherit backdrop-blur">
-    <div class="mx-auto flex max-w-6xl justify-between px-2 py-3">
+  <div class="fixed top-0 z-50 w-full border-b bg-inherit backdrop-blur">
+    <div class="mx-auto flex max-w-screen-xl justify-between py-3">
       <span @click="navigateTo('/')" class="cursor-pointer text-3xl font-bold"
         >ratioed</span
       >
