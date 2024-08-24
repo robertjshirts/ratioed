@@ -1,7 +1,8 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient();
-
 definePageMeta({ layout: false });
+
+const supabase = useSupabaseClient();
+const url = useRequestURL();
 
 const loading = ref(false);
 const username = ref("");
@@ -10,26 +11,31 @@ const errorOccured = ref();
 
 async function signInWithOtp() {
   loading.value = true;
+
   const { error } = await supabase.auth.signInWithOtp({
     email: email.value,
     options: {
       data: {
         username: username.value,
       },
-      emailRedirectTo: "http://ratioed.robertshirts.com/confirm",
+      emailRedirectTo: `${url.origin}/confirm`,
     },
   });
+
   errorOccured.value = error;
   loading.value = false;
 }
+
 async function signInWithGoogle() {
   loading.value = true;
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "http://ratioed.robertshirts.com/confirm",
+      redirectTo: `${url.origin}/confirm`,
     },
   });
+
   errorOccured.value = error;
   loading.value = false;
 }
