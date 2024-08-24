@@ -3,8 +3,8 @@ import type { Database } from "~/types/database";
 const supabase = useSupabaseClient<Database>();
 const profile = useProfileStore();
 
+const showModal = useState("showModal");
 const loading = ref(false);
-const showModal = ref(false);
 const content = ref("");
 const src = ref("");
 const files = ref();
@@ -48,12 +48,6 @@ async function makePost() {
 </script>
 
 <template>
-  <button
-    @click="showModal = true"
-    class="w-full rounded-3xl bg-white py-3 text-black transition-all hover:bg-gray-200"
-  >
-    Post
-  </button>
   <div
     v-if="showModal"
     class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-[#0f0f0f] bg-opacity-90 backdrop-blur"

@@ -6,4 +6,5 @@
       <slot></slot>
     </div>
   </div>
+  <PostModal />
 </template>

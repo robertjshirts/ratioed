@@ -2,6 +2,7 @@
 const supabase = useSupabaseClient();
 
 definePageMeta({ layout: false });
+const url = useRequestURL();
 
 const loading = ref(false);
 const username = ref("");
@@ -16,18 +17,19 @@ async function signInWithOtp() {
       data: {
         username: username.value,
       },
-      emailRedirectTo: "http://ratioed.robertshirts.com/confirm",
+      emailRedirectTo: `${url.origin}/confirm`,
     },
   });
   errorOccured.value = error;
   loading.value = false;
 }
+
 async function signInWithGoogle() {
   loading.value = true;
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: "http://ratioed.robertshirts.com/confirm",
+      redirectTo: `${url.origin}/confirm`,
     },
   });
   errorOccured.value = error;

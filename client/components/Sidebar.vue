@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const profile = useProfileStore();
+const showModal = useState("showModal", () => false);
 </script>
 
 <template>
@@ -34,7 +35,12 @@ const profile = useProfileStore();
       </button>
     </nav>
     <div v-if="profile.username" class="pt-8">
-      <PostModal />
+      <button
+        @click="showModal = true"
+        class="w-full rounded-3xl bg-white py-3 text-black transition-all hover:bg-gray-200"
+      >
+        Post
+      </button>
     </div>
     <div v-else class="flex flex-col py-3 text-lg">
       <span class="text-gray-300"
