@@ -1,8 +1,8 @@
 <template>
   <Topbar />
-  <div class="mx-auto max-w-6xl">
+  <div class="mx-4 max-w-6xl lg:mx-auto">
     <Sidebar />
-    <div class="pl-72 pt-8">
+    <div class="pt-8">
       <slot></slot>
     </div>
   </div>
