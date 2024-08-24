@@ -4,10 +4,10 @@ const showModal = useState("showModal", () => false);
 </script>
 
 <template>
-  <div
-    class="fixed z-50 h-full -translate-x-full transition-transform sm:translate-x-0"
+  <aside
+    class="fixed z-50 h-full w-64 -translate-x-full transition-transform md:translate-x-0"
   >
-    <div v-if="profile.username" class="flex flex-col border-b py-8 pl-2">
+    <div v-if="profile.username" class="flex flex-col border-b pb-8">
       <img :src="profile.avatarUrl || ''" class="w-24 rounded-full" />
       <div class="flex flex-col">
         <span class="mt-4 text-lg">{{ profile.username }}</span>
@@ -30,21 +30,13 @@ const showModal = useState("showModal", () => false);
       <button
         v-if="profile.username"
         @click="profile.signOut"
-        class="flex w-full items-center rounded-lg p-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
+        class="flex w-full items-center rounded-lg py-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
       >
         <Icon name="ph:arrow-fat-line-left" class="me-4" />
         Log out
       </button>
     </nav>
-    <div v-if="profile.username" class="pt-8">
-      <button
-        @click="showModal = true"
-        class="w-full rounded-3xl bg-white py-3 text-black transition-all hover:bg-gray-200"
-      >
-        Post
-      </button>
-    </div>
-    <div v-else class="flex flex-col py-3 text-lg">
+    <div v-if="!profile.username" class="flex flex-col py-3 text-lg">
       <span class="text-gray-300"
         >log in to follow users, ratio others, and have bad takes</span
       >
@@ -55,5 +47,13 @@ const showModal = useState("showModal", () => false);
         Log in
       </button>
     </div>
-  </div>
+    <div v-else class="pt-8">
+      <button
+        @click="showModal = true"
+        class="w-full rounded-full bg-white px-2 py-3 text-black"
+      >
+        Post
+      </button>
+    </div>
+  </aside>
 </template>

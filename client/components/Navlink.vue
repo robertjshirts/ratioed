@@ -9,7 +9,7 @@ const props = defineProps<{
 <template>
   <NuxtLink
     :to="to"
-    class="flex w-full items-center rounded-lg p-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
+    class="flex w-full items-center rounded-lg py-2 text-xl font-bold text-gray-400 transition-all hover:text-gray-200"
     :class="{ 'text-white': $route.path == props.to }"
   >
     <Icon
