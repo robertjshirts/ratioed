@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({ layout: false });
-const url = useRequestURL();
 
 const supabase = useSupabaseClient();
 const url = useRequestURL();
