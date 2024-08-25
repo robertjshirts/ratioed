@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import { RealtimeChannel } from "@supabase/supabase-js";
 import { useRoute } from "vue-router";
-import { usePost } from "~/composables/usePost";
 import type { Database } from "~/types/database";
+type Post = Database["public"]["Views"]["posts_view"]["Row"];
 
 const supabase = useSupabaseClient<Database>();
-const profile = useProfileStore();
 
 const route = useRoute();
 const post_id = route.params.id as string;
 
-// Define enum for types of sort (e.g. "newest", "oldest", "popular")
 const sort = ref<"newest" | "oldest" | "popular">("newest");
+
+let channel: RealtimeChannel;
 
 // Fetch the post
 const { data: post, status } = await useLazyAsyncData(
@@ -26,7 +27,7 @@ const { data: post, status } = await useLazyAsyncData(
 );
 
 // Fetch the comments
-const { data: comments, refresh } = await useLazyAsyncData(
+const { data: comments, refresh: refreshComments } = await useLazyAsyncData(
   `comments:${post_id}`,
   async () => {
     let query = supabase
@@ -53,7 +54,32 @@ const { data: comments, refresh } = await useLazyAsyncData(
 );
 
 watch(sort, () => {
-  refresh();
+  refreshComments();
+});
+
+onMounted (async function() {
+  channel = supabase
+    .channel("posts")
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "posts" },
+      async (payload) => {
+        if (payload.new.parent_id !== post_id) return;
+        console.log("New comment", payload.new);
+
+        const { post, error }= await usePost(payload.new.id);
+        if (error) {
+          console.error(error);
+        }
+
+        if (!post) return;
+        console.log(comments.value)
+        comments.value?.unshift(post);
+        console.log(comments.value)
+      },
+    );
+
+  channel.subscribe();
 });
 </script>
 
@@ -78,7 +104,7 @@ watch(sort, () => {
             <option value="popular">Most Popular</option>
           </select>
         </div>
-        <ReplyBox :postId="post_id" @reply="refresh()" />
+        <ReplyBox :postId="post_id" />
         <div 
         v-if="comments === null || comments.length === 0"
         class="py-4 text-center"

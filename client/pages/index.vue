@@ -1,30 +1,35 @@
 <script setup lang="ts">
 import { RealtimeChannel } from "@supabase/supabase-js";
 import type { Database } from "~/types/database";
+type Post = Database["public"]["Views"]["posts_view"]["Row"];
 const supabase = useSupabaseClient<Database>();
 
 let channel: RealtimeChannel;
+let timeline = ref<Post[]>([]);
 
-const {
-  data: timeline,
-  refresh: refreshTimeline,
-  status,
-} = await useAsyncData("timeline", async () => {
-  const { data } = await supabase
+onMounted(async function() {
+  const { data, error } = await supabase
     .from("posts_view")
     .select(`*`)
     .is("parent_id", null)
     .order("created_at", { ascending: false });
-  return data;
-});
+  timeline.value = data ?? [];
+  if (error) {
+    console.error(error);
+  }
 
-onMounted(() => {
   channel = supabase
-    .channel("reactions")
+    .channel("posts")
     .on(
       "postgres_changes",
-      { event: "*", schema: "public", table: "reactions" },
-      () => refreshTimeline(),
+      { event: "INSERT", schema: "public", table: "posts" },
+      async (payload) => {
+        const post = await getPostView(payload.new.id);
+
+        if (!post) return;
+
+        timeline.value.unshift(post);
+      },
     );
 
   channel.subscribe();
@@ -33,6 +38,18 @@ onMounted(() => {
 onUnmounted(() => {
   supabase.removeChannel(channel);
 });
+
+async function getPostView(post_id: string) {
+  const { data, error } = await supabase
+    .from("posts_view")
+    .select(`*`)
+    .eq("post_id", post_id)
+    .single();
+  if (error) {
+    console.error(error);
+  }
+  return data;
+}
 </script>
 
 <template>
@@ -59,7 +76,7 @@ onUnmounted(() => {
       </NuxtLink>
     </div>
   </div>
-  <div v-if="status === 'success'" class="me-8 ms-8 md:ms-0 xl:me-72">
-    <Post v-for="post in timeline" v-bind="post" />
+  <div class="me-8 ms-8 md:ms-0 xl:me-72">
+    <Post v-for="post in timeline" :key="post.post_id ?? undefined" v-bind="post" />
   </div>
 </template>

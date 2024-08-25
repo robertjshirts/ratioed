@@ -1,9 +1,53 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
+import { RealtimeChannel } from '@supabase/supabase-js';
 const props = defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
 const profile = useProfileStore();
-const badge = useRoleBadge(props.role);
+const supabase = useSupabaseClient();
+
+// Post likes or dislikes
 const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
+
+// Listen for likes or dislikes
+const likeCount = ref(props.likes ?? 0);
+const dislikeCount = ref(props.dislikes ?? 0);
+
+let reactionChannel: RealtimeChannel;
+onMounted(() => {
+  reactionChannel = supabase
+    .channel(`reactions:post_id=eq.${props.post_id}`)
+    .on("postgres_changes", 
+      {event: "INSERT", schema: "public", table: "reactions"},
+      (payload) => {
+        if (payload.new.post_id !== props.post_id) return;
+        if (payload.new.reaction_type === "like") {
+            likeCount.value++;
+        } else if (payload.new.reaction_type === "dislike") {
+            dislikeCount.value++;
+        }
+      }
+    )
+    .on("postgres_changes",
+      {event: "UPDATE", schema: "public", table: "reactions"},
+      (payload) => {
+        if (payload.new.post_id !== props.post_id) return;
+        if (payload.errors) {
+          console.error(payload.errors);
+          return;
+        }
+        console.log("Someone updated a reaction to: ", payload.new.reaction_type);
+        if (payload.new.reaction_type === "like") {
+            likeCount.value++;
+            dislikeCount.value--;
+        } else if (payload.new.reaction_type === "dislike") {
+            dislikeCount.value++;
+            likeCount.value--;
+        }
+      }
+    );
+
+  reactionChannel.subscribe();
+});
 </script>
 
 <template>
@@ -23,7 +67,16 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
       @click="navigateTo(`/user/${user_id}`)"
       class="text-base font-semibold hover:underline"
       >{{ username }}
-      <img v-if="badge" :src="badge" alt="badge" class="ms-2 inline-block w-6 h-6" />
+        <Icon
+          v-if="role == 'verified'"
+          name="ph:circle-wavy-check-duotone"
+          class="ms-2 text-blue-500"
+        />
+        <Icon
+          v-if="role == 'dev'"
+          name="ph:code-bold"
+          class="ms-2 text-green-500"
+        />
     </span>
 
       <span class="mt-1 text-gray-400">{{ content }}</span>
