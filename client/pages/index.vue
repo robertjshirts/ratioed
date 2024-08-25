@@ -9,7 +9,7 @@ const {
   data: timeline,
   refresh: refreshTimeline,
   status,
-} = await useLazyAsyncData("timeline", async () => {
+} = await useAsyncData("timeline", async () => {
   const { data } = await supabase
     .from("posts_view")
     .select(`*`)
@@ -55,7 +55,7 @@ onUnmounted(() => {
       <NuxtLink
         class="ms-4 text-gray-400"
         :class="{ 'text-white': $route.fullPath == '/home?f=following' }"
-        >following
+        >Following
       </NuxtLink>
     </div>
   </div>
