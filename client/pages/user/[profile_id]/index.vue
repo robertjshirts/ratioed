@@ -1,8 +1,25 @@
 <script setup lang="ts">
-const route = useRoute();
 import type { Database } from "~/types/database";
+const supabase = useSupabaseClient<Database>();
+const route = useRoute();
+
+const { data } = await useAsyncData("profile", async () => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", route.params.profile_id)
+    .single();
+
+  if (error) {
+    return null;
+  }
+
+  return data;
+});
 </script>
 
 <template>
-  <p>Home of {{ route.params.profile_id }}</p>
+  <div>
+    <NuxtImg :src="data!.avatar_url" class="w-32 rounded-full" />
+  </div>
 </template>

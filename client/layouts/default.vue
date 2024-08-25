@@ -1,8 +1,8 @@
 <template>
   <Topbar />
-  <div class="relative mx-auto mt-24 max-w-screen-xl">
+  <div class="mx-auto max-w-screen-xl px-0 md:px-4">
     <Sidebar />
-    <div class="md:ps-72">
+    <div class="pt-24 md:ps-72">
       <slot></slot>
     </div>
   </div>

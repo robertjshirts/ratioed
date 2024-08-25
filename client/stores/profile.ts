@@ -5,6 +5,7 @@ export const useProfileStore = defineStore("profile", () => {
   const username = useCookie("username");
   const email = useCookie("email");
   const avatarUrl = useCookie("avatarUrl");
+  const role = useCookie("role");
 
   async function signIn() {
     clearProfile();
@@ -13,18 +14,19 @@ export const useProfileStore = defineStore("profile", () => {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select(`id, username, avatar_url`)
+      .select(`id, username, avatar_url, role`)
       .eq("id", user.value.id)
       .single();
 
-    console.log(data, error);
-
-    if (data) {
-      id.value = data.id;
-      username.value = data.username;
-      email.value = user.value.email || "";
-      avatarUrl.value = data.avatar_url || "";
+    if (error) {
+      return;
     }
+
+    id.value = data.id;
+    username.value = data.username;
+    email.value = user.value.email || "";
+    avatarUrl.value = data.avatar_url || "";
+    role.value = data.role;
   }
 
   async function signOut() {
@@ -41,5 +43,14 @@ export const useProfileStore = defineStore("profile", () => {
     avatarUrl.value = "";
   }
 
-  return { id, username, email, avatarUrl, signIn, signOut, clearProfile };
+  return {
+    id,
+    username,
+    email,
+    avatarUrl,
+    role,
+    signIn,
+    signOut,
+    clearProfile,
+  };
 });

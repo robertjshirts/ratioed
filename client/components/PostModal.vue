@@ -100,7 +100,7 @@ async function makePost() {
           </div>
           <button
             @click="makePost"
-            class="rounded-3xl bg-white px-5 py-2 text-sm font-bold text-black"
+            class="rounded-3xl bg-gray-50 px-5 py-2 text-sm font-bold text-black"
           >
             Post
           </button>

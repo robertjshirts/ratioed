@@ -4,7 +4,7 @@ const profile = useProfileStore();
 
 <template>
   <div class="fixed top-0 z-50 w-full border-b bg-inherit backdrop-blur">
-    <div class="mx-auto flex max-w-screen-xl justify-between py-3">
+    <div class="mx-auto flex max-w-screen-xl justify-between px-4 py-3">
       <span @click="navigateTo('/')" class="cursor-pointer text-3xl font-bold"
         >ratioed</span
       >
@@ -23,7 +23,7 @@ const profile = useProfileStore();
         <button
           v-else
           @click="navigateTo('/login')"
-          class="rounded-md bg-white px-6 py-1 text-black transition-all hover:bg-gray-200"
+          class="rounded-md bg-gray-50 px-6 py-1 text-black transition-all hover:bg-gray-200"
         >
           Log in
         </button>
