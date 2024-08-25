@@ -19,7 +19,11 @@ const { data } = await useAsyncData("profile", async () => {
 </script>
 
 <template>
-  <div>
-    <NuxtImg :src="data!.avatar_url" class="w-32 rounded-full" />
+  <div class="flex">
+    <NuxtImg :src="data?.avatar_url" class="w-28 rounded-full" />
+    <div class="ms-2 mt-1">
+      <span class="text-2xl">{{ data?.username }}</span>
+      <span>{{ data?.bio }}</span>
+    </div>
   </div>
 </template>
