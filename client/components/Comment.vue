@@ -2,7 +2,6 @@
 import type { Database } from "~/types/database";
 const props = defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
 const profile = useProfileStore();
-const badge = useRoleBadge(props.role);
 const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
 </script>
 
@@ -23,7 +22,16 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
       @click="navigateTo(`/user/${user_id}`)"
       class="text-base font-semibold hover:underline"
       >{{ username }}
-      <img v-if="badge" :src="badge" alt="badge" class="ms-2 inline-block w-6 h-6" />
+        <Icon
+          v-if="role == 'verified'"
+          name="ph:circle-wavy-check-duotone"
+          class="ms-2 text-blue-500"
+        />
+        <Icon
+          v-if="role == 'dev'"
+          name="ph:code-bold"
+          class="ms-2 text-green-500"
+        />
     </span>
 
       <span class="mt-1 text-gray-400">{{ content }}</span>

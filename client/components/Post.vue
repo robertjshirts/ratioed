@@ -38,7 +38,7 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
           class="ms-2 text-green-500"
         />
       </span>
-      <span class="mt-1 text-gray-300">{{ content }} {{ role }}</span>
+      <span class="mt-1 text-gray-300">{{ content }}</span>
       <NuxtImg
         preload
         placeholder
