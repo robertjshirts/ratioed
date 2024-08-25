@@ -106,18 +106,21 @@ export type Database = {
           post_id: string
           profile_id: string
           reaction_type: Database["public"]["Enums"]["reaction_type"]
+          trigger_log_uid: string | null
         }
         Insert: {
           created_at?: string
           post_id: string
           profile_id: string
           reaction_type: Database["public"]["Enums"]["reaction_type"]
+          trigger_log_uid?: string | null
         }
         Update: {
           created_at?: string
           post_id?: string
           profile_id?: string
           reaction_type?: Database["public"]["Enums"]["reaction_type"]
+          trigger_log_uid?: string | null
         }
         Relationships: [
           {

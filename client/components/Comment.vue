@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
 const props = defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
-const { like, dislike } = await useReaction(props.user_id, props.post_id);
+const profile = useProfileStore();
+const badge = useRoleBadge(props.role);
+const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
 </script>
 
 <template>
@@ -20,7 +22,9 @@ const { like, dislike } = await useReaction(props.user_id, props.post_id);
       <span 
       @click="navigateTo(`/user/${user_id}`)"
       class="text-base font-semibold hover:underline"
-      >{{ username }}</span>
+      >{{ username }}
+      <img v-if="badge" :src="badge" alt="badge" class="ms-2 inline-block w-6 h-6" />
+    </span>
 
       <span class="mt-1 text-gray-400">{{ content }}</span>
       <NuxtImg
