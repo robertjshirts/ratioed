@@ -4,6 +4,7 @@ import { usePost } from "~/composables/usePost";
 import type { Database } from "~/types/database";
 
 const supabase = useSupabaseClient<Database>();
+const profile = useProfileStore();
 
 const route = useRoute();
 const post_id = route.params.id as string;
