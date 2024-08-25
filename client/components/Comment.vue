@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
-defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
+const props = defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
+const { like, dislike } = await useReaction(props.user_id, props.post_id);
 </script>
 
 <template>
@@ -31,14 +32,14 @@ defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
         class="mt-3 rounded-md bg-contain"
       />
       <div class="mt-3 flex text-gray-500 text-sm">
-        <button class="flex items-center">
+        <button @click="like" class="flex items-center">
           <Icon name="ph:thumbs-up" class="z-10 me-2" />{{ likes }}
         </button>
-        <button class="flex items-center">
+        <button @click="dislike" class="flex items-center">
           <Icon name="ph:thumbs-down" class="z-10 me-4 ms-6" />{{ dislikes }}
         </button>
-        <button class="flex items-center">
-          <Icon name="ph:chat" class="me-2 ms-6" />{{ child_posts }}
+        <button @click="navigateTo(`/user/${user_id}/posts/${post_id}`)" class="flex items-center p-2 hover:bg-gray-800 rounded ms-8">
+          <Icon name="ph:chat" class="me-2" />{{ child_posts }}
         </button>
       </div>
     </div>

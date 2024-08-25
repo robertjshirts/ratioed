@@ -7,7 +7,8 @@ const { postId } = defineProps<{ postId: string }>();
 const emit = defineEmits(["reply"])
 
 const supabase = useSupabaseClient<Database>();
-const user = useSupabaseUser();
+const profile = useProfileStore();
+
 
 const { content, autoResize } = useAutoResize();
 const src = ref('');
@@ -36,7 +37,7 @@ async function makeReply() {
   }
 
   const { error } = await supabase.from('posts').insert({
-    profile_id: user.value.id,
+    profile_id: profile.id,
     parent_id: postId,
     content: content.value,
     attachment_url: attachmentUrl,
@@ -58,7 +59,7 @@ async function makeReply() {
   <div class="reply-section p-4 rounded-lg border bg-[#131313] mt-4">
     <div class="flex border-b px-3">
           <img
-            :src="user.user_metadata.avatar_url"
+            :src="profile.avatarUrl ?? undefined"
             class="h-12 w-12 rounded-full"
             alt="pfp failed to load"
           />

@@ -9,12 +9,12 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "2024-08-07",
   modules: [
+    "@pinia/nuxt",
     "@nuxtjs/tailwindcss",
     "@nuxt/icon",
     "@nuxtjs/google-fonts",
     "@nuxtjs/supabase",
     "@nuxt/image",
-    "@pinia/nuxt",
   ],
   supabase: {
     redirect: false,

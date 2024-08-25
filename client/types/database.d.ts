@@ -67,24 +67,27 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string | null
+          avatar_url: string
           bio: string | null
           created_at: string
           id: string
+          role: Database["public"]["Enums"]["role_type"]
           username: string
         }
         Insert: {
-          avatar_url?: string | null
+          avatar_url?: string
           bio?: string | null
           created_at?: string
           id?: string
+          role?: Database["public"]["Enums"]["role_type"]
           username: string
         }
         Update: {
-          avatar_url?: string | null
+          avatar_url?: string
           bio?: string | null
           created_at?: string
           id?: string
+          role?: Database["public"]["Enums"]["role_type"]
           username?: string
         }
         Relationships: [
@@ -101,20 +104,20 @@ export type Database = {
         Row: {
           created_at: string
           post_id: string
+          profile_id: string
           reaction_type: Database["public"]["Enums"]["reaction_type"]
-          user_id: string
         }
         Insert: {
           created_at?: string
           post_id: string
+          profile_id: string
           reaction_type: Database["public"]["Enums"]["reaction_type"]
-          user_id: string
         }
         Update: {
           created_at?: string
           post_id?: string
+          profile_id?: string
           reaction_type?: Database["public"]["Enums"]["reaction_type"]
-          user_id?: string
         }
         Relationships: [
           {
@@ -132,15 +135,15 @@ export type Database = {
             referencedColumns: ["post_id"]
           },
           {
-            foreignKeyName: "reactions_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "reactions_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "posts_view"
             referencedColumns: ["user_id"]
           },
           {
-            foreignKeyName: "reactions_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "reactions_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -160,6 +163,7 @@ export type Database = {
           likes: number | null
           parent_id: string | null
           post_id: string | null
+          role: Database["public"]["Enums"]["role_type"] | null
           user_id: string | null
           username: string | null
         }
@@ -193,6 +197,7 @@ export type Database = {
     }
     Enums: {
       reaction_type: "like" | "dislike"
+      role_type: "dev" | "verified" | "unverified"
     }
     CompositeTypes: {
       [_ in never]: never
