@@ -1,11 +1,18 @@
+import { ref } from "vue";
+import { RealtimeChannel } from "@supabase/supabase-js";
 import type { Database } from "~/types/database";
 
 export async function useReaction(profile_id: string | null, post_id: string | null) {
     const supabase = useSupabaseClient<Database>();
+    const myReaction = ref<"like" | "dislike" | null>(null);
 
     const like = async () => {
         if (!profile_id || !post_id) {
-            console.error("Profile ID and Post ID are required to like a post");
+            console.log("User attempted to react to a post without being logged in");
+            return;
+        }
+
+        if (myReaction.value === "like") {
             return;
         }
 
@@ -16,63 +23,44 @@ export async function useReaction(profile_id: string | null, post_id: string | n
         if (error) {
             console.error("Error liking post", error);
         }
+        myReaction.value = "like";
     };
 
     const dislike = async () => {
         if (!profile_id || !post_id) {
-            console.error("Profile ID and Post ID are required to like a post");
+            console.log("User attempted to react to a post without being logged in");
             return;
         }
-    
-        const { data, error } = await supabase
+
+        if (myReaction.value === "dislike") {
+            return;
+        }
+
+        const { error } = await supabase
             .from("reactions")
+            .upsert({ profile_id, post_id, reaction_type: "dislike" })
             .select()
-            .eq('profile_id', profile_id)
-            .eq('post_id', post_id)
-            .single();
-    
-        if (error && error.code !== 'PGRST116') { // 116 means no row found
-            console.error("Error checking existing reaction", error);
-            return;
+        if (error) {
+            console.error("Error disliking post", error);
         }
-    
-        if (data) {
-            // Update existing reaction
-            const { error: updateError } = await supabase
-                .from("reactions")
-                .update({ reaction_type: "dislike" })
-                .eq('profile_id', profile_id)
-                .eq('post_id', post_id);
-    
-            if (updateError) {
-                console.error("Error updating dislike", updateError);
-            }
-        } else {
-            // Insert new reaction
-            const { error: insertError } = await supabase
-                .from("reactions")
-                .insert({ profile_id, post_id, reaction_type: "dislike" });
-    
-            if (insertError) {
-                console.error("Error inserting dislike", insertError);
-            }
-        }
+        myReaction.value = "dislike";
     };
 
-    // const dislike = async () => {
-        // if (!profile_id || !post_id) {
-            // console.error("Profile ID and Post ID are required to like a post");
-            // return;
-        // }
+    if (!profile_id || !post_id) {
+        return { like, dislike, myReaction } as const;
+    }
 
-        // const { error } = await supabase
-            // .from("reactions")
-            // .update({ reaction_type: "dislike" })
-            // .eq("profile_id", profile_id)
-            // .eq('post_id', post_id)
-        // if (error) {
-            // console.error("Error disliking post", error);
-        // }
-    // };
-    return { like, dislike } as const;
+    // Check if user has already reacted to this post
+    const { data: myReactionData } = await supabase
+        .from("reactions")
+        .select("reaction_type")
+        .eq("profile_id", profile_id)
+        .eq("post_id", post_id)
+        .single();
+    if (myReactionData) {
+        myReaction.value = myReactionData.reaction_type;
+    }
+
+
+    return { like, dislike, myReaction } as const;
 }

@@ -1,8 +1,55 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
+import { RealtimeChannel } from "@supabase/supabase-js";
 const props = defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
 const profile = useProfileStore();
-const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
+const supabase = useSupabaseClient<Database>();
+
+// Post likes or dislikes
+const { like, dislike, myReaction } = await useReaction(profile.id ?? null, props.post_id);
+
+// Listen for likes or dislikes
+const likeCount = ref(props.likes ?? 0); 
+const dislikeCount = ref(props.dislikes ?? 0);
+
+let reactionChannel: RealtimeChannel;
+
+onMounted(() => {
+  reactionChannel = supabase
+    .channel(`reactions:post_id=eq.${props.post_id}`)
+    .on("postgres_changes", 
+      {event: "INSERT", schema: "public", table: "reactions"},
+      (payload) => {
+        if (payload.new.post_id !== props.post_id) return;
+        if (payload.new.reaction_type === "like") {
+            likeCount.value++;
+        } else if (payload.new.reaction_type === "dislike") {
+            dislikeCount.value++;
+        }
+      }
+    )
+    .on("postgres_changes",
+      {event: "UPDATE", schema: "public", table: "reactions"},
+      (payload) => {
+        if (payload.new.post_id !== props.post_id) return;
+        console.log("Someone updated a reaction to: ", payload.new.reaction_type);
+        if (payload.new.reaction_type === "like") {
+            likeCount.value++;
+            dislikeCount.value--;
+        } else if (payload.new.reaction_type === "dislike") {
+            dislikeCount.value++;
+            likeCount.value--;
+        }
+      }
+    );
+
+  reactionChannel.subscribe();
+})
+
+onUnmounted(() => {
+  supabase.removeChannel(reactionChannel);
+});
+
 </script>
 
 <template>
@@ -52,13 +99,13 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
           @click.stop="like"
           class="flex items-center rounded p-2 hover:bg-gray-800"
         >
-          <Icon name="ph:thumbs-up" class="z-10 me-2" />{{ likes }}
+          <Icon name="ph:thumbs-up" class="z-10 me-2" />{{ likeCount }}
         </button>
         <button
           @click.stop="dislike"
           class="ms-8 flex items-center rounded p-2 hover:bg-gray-800"
         >
-          <Icon name="ph:thumbs-down" class="z-10 me-2" />{{ dislikes }}
+          <Icon name="ph:thumbs-down" class="z-10 me-2" />{{ dislikeCount }}
         </button>
         <button
           @click="navigateTo(`/user/${user_id}/posts/${post_id}`)"

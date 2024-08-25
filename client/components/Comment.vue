@@ -1,8 +1,53 @@
 <script setup lang="ts">
 import type { Database } from "~/types/database";
+import { RealtimeChannel } from '@supabase/supabase-js';
 const props = defineProps<Database["public"]["Views"]["posts_view"]["Row"]>();
 const profile = useProfileStore();
+const supabase = useSupabaseClient();
+
+// Post likes or dislikes
 const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
+
+// Listen for likes or dislikes
+const likeCount = ref(props.likes ?? 0);
+const dislikeCount = ref(props.dislikes ?? 0);
+
+let reactionChannel: RealtimeChannel;
+onMounted(() => {
+  reactionChannel = supabase
+    .channel(`reactions:post_id=eq.${props.post_id}`)
+    .on("postgres_changes", 
+      {event: "INSERT", schema: "public", table: "reactions"},
+      (payload) => {
+        if (payload.new.post_id !== props.post_id) return;
+        if (payload.new.reaction_type === "like") {
+            likeCount.value++;
+        } else if (payload.new.reaction_type === "dislike") {
+            dislikeCount.value++;
+        }
+      }
+    )
+    .on("postgres_changes",
+      {event: "UPDATE", schema: "public", table: "reactions"},
+      (payload) => {
+        if (payload.new.post_id !== props.post_id) return;
+        if (payload.errors) {
+          console.error(payload.errors);
+          return;
+        }
+        console.log("Someone updated a reaction to: ", payload.new.reaction_type);
+        if (payload.new.reaction_type === "like") {
+            likeCount.value++;
+            dislikeCount.value--;
+        } else if (payload.new.reaction_type === "dislike") {
+            dislikeCount.value++;
+            likeCount.value--;
+        }
+      }
+    );
+
+  reactionChannel.subscribe();
+});
 </script>
 
 <template>
