@@ -8,7 +8,7 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
 <template>
   <div
     @click="navigateTo(`/user/${user_id}/posts/${post_id}`)"
-    class="my-4 flex flex-1 cursor-pointer rounded-lg border bg-[#131313] p-4 pe-8 transition-all hover:bg-[#141414]"
+    class="my-4 flex flex-1 cursor-pointer rounded-lg border bg-[#101010] p-4 pe-8 transition-all hover:bg-[#141414]"
   >
     <div class="mt-1">
       <img
@@ -38,7 +38,7 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
           class="ms-2 text-green-500"
         />
       </span>
-      <span class="mt-1 text-gray-300">{{ content }} {{ role }}</span>
+      <span class="mt-1 text-gray-300">{{ content }}</span>
       <NuxtImg
         preload
         placeholder
