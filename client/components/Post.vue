@@ -40,13 +40,22 @@ const { like, dislike } = await useReaction(profile.id ?? null, props.post_id);
         class="mt-4 cursor-auto rounded-lg bg-contain"
       />
       <div class="mt-4 flex text-gray-400">
-        <button @click="like" class="flex items-center p-2 hover:bg-gray-800 rounded">
+        <button
+          @click.stop="like"
+          class="flex items-center rounded p-2 hover:bg-gray-800"
+        >
           <Icon name="ph:thumbs-up" class="z-10 me-2" />{{ likes }}
         </button>
-        <button @click="dislike" class="flex items-center p-2 hover:bg-gray-800 rounded ms-8">
+        <button
+          @click.stop="dislike"
+          class="ms-8 flex items-center rounded p-2 hover:bg-gray-800"
+        >
           <Icon name="ph:thumbs-down" class="z-10 me-2" />{{ dislikes }}
         </button>
-        <button @click="navigateTo(`/user/${user_id}/posts/${post_id}`)" class="flex items-center p-2 hover:bg-gray-800 rounded ms-8">
+        <button
+          @click="navigateTo(`/user/${user_id}/posts/${post_id}`)"
+          class="ms-8 flex items-center rounded p-2 hover:bg-gray-800"
+        >
           <Icon name="ph:chat" class="me-2" />{{ child_posts }}
         </button>
       </div>
