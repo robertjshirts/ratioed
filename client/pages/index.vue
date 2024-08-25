@@ -16,7 +16,9 @@ const { data: timeline, status } = await useLazyAsyncData(
 </script>
 
 <template>
-  <div class="mb-2 flex max-w-screen-md items-end justify-between">
+  <div
+    class="mb-2 me-8 ms-8 flex items-end justify-between md:ms-0 lg:me-12 xl:me-72"
+  >
     <span class="text-2xl font-bold">Home</span>
     <div class="flex">
       <NuxtLink
@@ -37,7 +39,7 @@ const { data: timeline, status } = await useLazyAsyncData(
       </NuxtLink>
     </div>
   </div>
-  <div v-if="status === 'success'" class="max-w-screen-md">
+  <div v-if="status === 'success'" class="me-8 ms-8 md:ms-0 xl:me-72">
     <Post v-for="post in timeline" v-bind="post" />
   </div>
 </template>
