@@ -1,18 +1,38 @@
 <script setup lang="ts">
+import { RealtimeChannel } from "@supabase/supabase-js";
 import type { Database } from "~/types/database";
 const supabase = useSupabaseClient<Database>();
 
-const { data: timeline, status } = await useLazyAsyncData(
-  "timeline",
-  async () => {
-    const { data } = await supabase
-      .from("posts_view")
-      .select(`*`)
-      .is("parent_id", null)
-      .order("created_at", { ascending: false });
-    return data;
-  },
-);
+let channel: RealtimeChannel;
+
+const {
+  data: timeline,
+  refresh: refreshTimeline,
+  status,
+} = await useLazyAsyncData("timeline", async () => {
+  const { data } = await supabase
+    .from("posts_view")
+    .select(`*`)
+    .is("parent_id", null)
+    .order("created_at", { ascending: false });
+  return data;
+});
+
+onMounted(() => {
+  channel = supabase
+    .channel("reactions")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "reactions" },
+      () => refreshTimeline(),
+    );
+
+  channel.subscribe();
+});
+
+onUnmounted(() => {
+  supabase.removeChannel(channel);
+});
 </script>
 
 <template>
