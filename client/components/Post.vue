@@ -12,6 +12,9 @@ const { like, dislike, myReaction } = await useReaction(profile.id ?? null, prop
 const likeCount = ref(props.likes ?? 0); 
 const dislikeCount = ref(props.dislikes ?? 0);
 
+// Ratio posts
+const ratioed = useRatio(likeCount, dislikeCount);
+
 let reactionChannel: RealtimeChannel;
 
 onMounted(() => {
@@ -32,7 +35,6 @@ onMounted(() => {
       {event: "UPDATE", schema: "public", table: "reactions"},
       (payload) => {
         if (payload.new.post_id !== props.post_id) return;
-        console.log("Someone updated a reaction to: ", payload.new.reaction_type);
         if (payload.new.reaction_type === "like") {
             likeCount.value++;
             dislikeCount.value--;
@@ -85,7 +87,7 @@ onUnmounted(() => {
           class="ms-2 text-green-500"
         />
       </span>
-      <span class="mt-1 text-gray-300">{{ content }}</span>
+      <span class="mt-1 text-gray-300">{{ ratioed ? "[this post has been ratioed]" : content }}</span>
       <NuxtImg
         preload
         placeholder
@@ -99,13 +101,13 @@ onUnmounted(() => {
           @click.stop="like"
           class="flex items-center rounded p-2 hover:bg-gray-800"
         >
-          <Icon name="ph:thumbs-up" class="z-10 me-2" />{{ likeCount }}
+          <Icon :name="myReaction === 'like' ? 'ph:thumbs-up-fill' : 'ph-thumbs-up'" class="z-10 me-2" />{{ likeCount }}
         </button>
         <button
           @click.stop="dislike"
           class="ms-8 flex items-center rounded p-2 hover:bg-gray-800"
         >
-          <Icon name="ph:thumbs-down" class="z-10 me-2" />{{ dislikeCount }}
+          <Icon :name="myReaction === 'dislike' ? 'ph:thumbs-down-fill' : 'ph:thumbs-down'" class="z-10 me-2" />{{ dislikeCount }}
         </button>
         <button
           @click="navigateTo(`/user/${user_id}/posts/${post_id}`)"
