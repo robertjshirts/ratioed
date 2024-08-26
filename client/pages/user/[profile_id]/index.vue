@@ -22,7 +22,8 @@ const { data } = await useAsyncData("profile", async () => {
   <div class="flex">
     <NuxtImg :src="data?.avatar_url" class="w-28 rounded-full" />
     <div class="ms-2 mt-1">
-      <span class="text-2xl">{{ data?.username }}</span>
+      <span class="text-2xl">{{ data?.username }}</span
+      ><br />
       <span>{{ data?.bio }}</span>
     </div>
   </div>
