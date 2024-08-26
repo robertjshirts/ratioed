@@ -85,7 +85,7 @@ onMounted(() => {
       <NuxtImg
         preload
         placeholder
-        v-if="attachment_url"
+        v-if="attachment_url && !ratioed"
         :src="attachment_url"
         alt="image failed to load"
         class="mt-3 rounded-md bg-contain"

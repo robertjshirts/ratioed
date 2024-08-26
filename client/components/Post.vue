@@ -91,7 +91,7 @@ onUnmounted(() => {
       <NuxtImg
         preload
         placeholder
-        v-if="attachment_url"
+        v-if="attachment_url && !ratioed"
         :src="attachment_url"
         alt="image failed to load"
         class="mt-4 cursor-auto rounded-lg bg-contain"

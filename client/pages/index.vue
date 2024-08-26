@@ -7,21 +7,15 @@ const supabase = useSupabaseClient<Database>();
 let channel: RealtimeChannel;
 let timeline = ref<Post[]>([]);
 
+const page = ref<'recent' | 'popular'>('recent');
+
 const limit = 25;
 let offset = 0;
 
 // Fetch timeline onMounted
 onMounted(async function() {
-  const { data, error } = await supabase
-    .from("posts_view")
-    .select(`*`)
-    .is("parent_id", null)
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const data = await getPosts();
   timeline.value = data ?? [];
-  if (error) {
-    console.error(error);
-  }
 
   // Subscribe for realtime posts
   channel = supabase
@@ -30,7 +24,12 @@ onMounted(async function() {
       "postgres_changes",
       { event: "INSERT", schema: "public", table: "posts" },
       async (payload) => {
+        // Format post and get relevant data
         const post = await getPostView(payload.new.id);
+        // Popular page doesn't need to update in realtime
+        if (page.value === 'popular') {
+          return;
+        }
 
         if (!post) return;
 
@@ -49,17 +48,33 @@ onUnmounted(() => {
 // Load more posts
 async function loadMore() {
   offset += limit;
-  const { data, error } = await supabase
+  const data = await getPosts();
+
+  timeline.value.push(...(data ?? []));
+}
+
+// Fetch posts util function
+async function getPosts() {
+  let query = supabase
     .from("posts_view")
     .select(`*`)
     .is("parent_id", null)
-    .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+
+    // Change query if page is popular or recent
+    if (page.value === 'popular') {
+      query = query.order("likes", { ascending: false });
+      query = query.gte("created_at", oneDayAgo().toISOString());
+    } else {
+      query = query.order("created_at", { ascending: false });
+    }
+
+    // Add pagination
+    query = query.range(offset, offset + limit - 1);
+  const { data, error } = await query;
   if (error) {
     console.error(error);
   }
-
-  timeline.value.push(...(data ?? []));
+  return data;
 }
 
 // Util function
@@ -74,6 +89,19 @@ async function getPostView(post_id: string) {
   }
   return data;
 }
+
+function oneDayAgo() {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date;
+}
+
+async function changePage(newPage: 'recent' | 'popular') {
+  page.value = newPage;
+  offset = 0;
+  const data = await getPosts();
+  timeline.value = data ?? [];
+}
 </script>
 
 <template>
@@ -85,19 +113,22 @@ async function getPostView(post_id: string) {
       <NuxtLink
         to="/"
         class="text-gray-400"
-        :class="{ 'text-white': $route.fullPath == '/' }"
+        :class="{ 'text-white': page === 'recent' }"
+        @click="changePage('recent')"
         >Recent
       </NuxtLink>
       <NuxtLink
+        to="/"
         class="ms-4 text-gray-400"
-        :class="{ 'text-white': $route.fullPath == '/home?f=popular' }"
+        :class="{ 'text-white': page === 'popular' }"
+        @click="changePage('popular')"
         >Popular
       </NuxtLink>
-      <NuxtLink
+      <!-- <NuxtLink
         class="ms-4 text-gray-400"
         :class="{ 'text-white': $route.fullPath == '/home?f=following' }"
         >Following
-      </NuxtLink>
+      </NuxtLink> -->
     </div>
   </div>
   <div class="me-8 ms-8 md:ms-0 xl:me-72">
