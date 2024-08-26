@@ -57,7 +57,7 @@ onUnmounted(() => {
 <template>
   <div
     @click="navigateTo(`/user/${user_id}/posts/${post_id}`)"
-    class="my-4 flex flex-1 cursor-pointer rounded-lg border bg-[#131313] p-4 pe-8 transition-all hover:bg-[#141414]"
+    class="my-4 flex flex-1 cursor-pointer rounded-lg border bg-[#101010] p-4 pe-8 shadow-lg transition-all hover:bg-[#141414]"
   >
     <div class="mt-1">
       <img

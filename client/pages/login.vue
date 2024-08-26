@@ -22,28 +22,34 @@ async function signInWithOtp() {
     },
   });
 
-  errorOccured.value = error;
+  if (error) {
+    errorOccured.value = error;
+  }
+
   loading.value = false;
 }
 
 async function signInWithGoogle() {
   loading.value = true;
 
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       redirectTo: `${url.origin}/confirm`,
     },
   });
 
-  errorOccured.value = error;
+  if (error) {
+    errorOccured.value = error;
+  }
+
   loading.value = false;
 }
 </script>
 
 <template>
   <div class="flex h-screen w-screen flex-col items-center justify-center">
-    <div class="flex max-w-sm flex-col rounded-lg border bg-[#181818] p-7">
+    <div class="flex max-w-sm flex-col rounded-lg border bg-[#101010] p-7">
       <div class="mb-4 flex flex-col">
         <span class="text-3xl">Sign in</span>
         <span class="text-gray-400"
@@ -75,7 +81,7 @@ async function signInWithGoogle() {
       <div class="mt-4 flex items-center justify-center align-middle">
         <button
           @click="signInWithOtp"
-          class="w-full rounded-md bg-white p-3 text-center font-bold text-black"
+          class="w-full rounded-md bg-gray-100 p-3 text-center font-bold text-black"
         >
           <Icon name="ph:envelope-simple" class="me-2" />{{
             loading ? "loading" : "sign in with magic link"
