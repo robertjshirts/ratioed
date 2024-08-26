@@ -27,4 +27,5 @@ const { data } = await useAsyncData("profile", async () => {
       <span>{{ data?.bio }}</span>
     </div>
   </div>
+  <span>page still in construction</span>
 </template>
