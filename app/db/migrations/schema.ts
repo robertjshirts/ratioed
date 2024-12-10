@@ -1,9 +1,10 @@
-import { pgTable, serial, text } from "drizzle-orm/pg-core"
+import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
 
-export const playingWithNeon = pgTable("playing_with_neon", {
-	id: serial().primaryKey().notNull(),
-	body: text().notNull(),
+export const post = pgTable("post", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	content: text(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 });
