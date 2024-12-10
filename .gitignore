@@ -1,3 +1,5 @@
+.env
+.vite
 .DS_Store
 /node_modules/
 
