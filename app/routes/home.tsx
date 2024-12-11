@@ -1,5 +1,3 @@
-import type { Route } from "./+types/home";
-
-export default function Home({ loaderData }: Route.ComponentProps) {
-  return <div>hello</div>;
+export default function Home() {
+  return <div>home</div>;
 }
