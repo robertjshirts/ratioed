@@ -1,4 +1,6 @@
 {
-    "unstable": ["unsafe-proto"]
+  "unstable": ["unsafe-proto"],
+  "tasks": {
+    "build": "docker build -t ratioed ."
+  }
 }
-  
