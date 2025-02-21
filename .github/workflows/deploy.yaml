@@ -1,3 +1,5 @@
+name: SSH and Redeploy on Server
+
 on:
   registry_package:
     types:
