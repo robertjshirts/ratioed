@@ -20,24 +20,30 @@ export const usersTable = pgTable("users", {
   ...timestamps,
 });
 
-export const postsTable = pgTable("posts", {
-  id: uuid().defaultRandom().primaryKey(),
-  authorId: uuid().notNull(),
-  parentId: uuid(),
-  body: varchar({ length: 400 }), // More than twitter
-  ...timestamps,
-}, (table) => [
-  foreignKey({ // posts -> users
-    columns: [table.authorId],
-    foreignColumns: [usersTable.id],
-    name: "posts_authorId_fk",
-  }),
-  foreignKey({ // posts -> posts (for comments)
-    columns: [table.parentId],
-    foreignColumns: [table.id],
-    name: "post_parentId_fk",
-  }),
-]);
+export const postsTable = pgTable(
+  "posts",
+  {
+    id: uuid().defaultRandom().primaryKey(),
+    authorId: uuid().notNull(),
+    parentId: uuid(),
+    body: varchar({ length: 400 }), // More than twitter
+    ...timestamps,
+  },
+  (table) => [
+    foreignKey({
+      // posts -> users
+      columns: [table.authorId],
+      foreignColumns: [usersTable.id],
+      name: "posts_authorId_fk",
+    }),
+    foreignKey({
+      // posts -> posts (for comments)
+      columns: [table.parentId],
+      foreignColumns: [table.id],
+      name: "post_parentId_fk",
+    }),
+  ],
+);
 
 export const reactionEnum = pgEnum("reaction", ["like", "dislike"]);
 

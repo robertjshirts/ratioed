@@ -2,5 +2,15 @@
   "unstable": ["unsafe-proto"],
   "tasks": {
     "build": "docker build -t ratioed ."
+  },
+  "nodeModulesDir": "auto",
+  "imports": {
+    "@neondatabase/serverless": "npm:@neondatabase/serverless@^0.10.4",
+    "@types/react": "npm:@types/react@^19.0.10",
+    "dotenv": "npm:dotenv@^16.4.7",
+    "drizzle-kit": "npm:drizzle-kit@^0.30.5",
+    "drizzle-orm": "npm:drizzle-orm@^0.40.0",
+    "react": "npm:react@^19.0.0",
+    "tsx": "npm:tsx@^4.19.3"
   }
 }
