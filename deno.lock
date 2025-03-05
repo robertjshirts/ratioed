@@ -2464,6 +2464,7 @@
         "npm:@types/node@20",
         "npm:@types/react-dom@19",
         "npm:@types/react@19",
+        "npm:drizzle-orm@0.40",
         "npm:eslint-config-next@15.1.7",
         "npm:eslint@9",
         "npm:next@15.1.7",
